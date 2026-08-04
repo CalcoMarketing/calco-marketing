@@ -91,4 +91,55 @@
 
   "pilares": [
     { "clave": "producto", "nombre": "Producto en detalle", "peso": 25, "objetivo": "Mostrar calidad y terminación. Detener el scroll con un detalle material concreto." },
-    { "clave":
+    { "clave": "produccion", "nombre": "Detrás de la producción", "peso": 20, "objetivo": "Generar confianza mostrando máquinas y proceso. Casi ninguna imprenta uruguaya lo hace." },
+    { "clave": "vertical", "nombre": "Vertical / caso de uso", "peso": 20, "objetivo": "Hablarle directo a un rubro específico. Es el pilar que más convierte." },
+    { "clave": "educativo", "nombre": "Educativo / técnico", "peso": 20, "objetivo": "Responder una duda real del cliente. Posiciona en Google y en buscadores de IA." },
+    { "clave": "credibilidad", "nombre": "Credibilidad", "peso": 10, "objetivo": "20 años, certificación, depósito legal gratuito, entrega a domicilio." },
+    { "clave": "servicio", "nombre": "Servicio / urgencias", "peso": 5, "objetivo": "Alta intención. Trae consultas el mismo día." }
+  ],
+
+  "ctas": [
+    "Presupuestá en calco.uy (link en bio)",
+    "Escribinos por WhatsApp al 093944783",
+    "Contanos qué necesitás en los comentarios",
+    "SIN_CTA"
+  ],
+
+  "hashtags": {
+    "base": ["#ImprentaUruguay", "#IndustriaGrafica", "#HechoEnUruguay"],
+    "geo": ["#Montevideo", "#Canelones", "#CiudadDeLaCosta"],
+    "producto": {
+      "packaging": ["#PackagingUruguay", "#Estucheria", "#Troquelado", "#DiseñoDeEmpaque"],
+      "etiquetas": ["#EtiquetasUruguay", "#EtiquetasEnRollo", "#Etiquetas"],
+      "papeleria": ["#PapeleriaEmpresarial", "#IdentidadCorporativa"],
+      "editorial": ["#Libros", "#Editorial", "#PublicarUnLibro"],
+      "merchandising": ["#Merchandising", "#PuntoDeVenta"],
+      "senaletica": ["#Senaletica", "#Gigantografia", "#Arquigrafia"],
+      "urgentes": ["#ImpresosUrgentes", "#ImpresionRapida"]
+    },
+    "vertical": {
+      "alimentos": ["#AlimentosYBebidas", "#Cerveceria", "#Bodega"],
+      "farmacia": ["#Cosmetica", "#Farmacia", "#PackagingPremium"],
+      "gastronomia": ["#Gastronomia", "#Delivery", "#Restaurantes"],
+      "quimicos": ["#Quimicos", "#Limpieza"],
+      "tiendas": ["#Retail", "#Tiendas", "#Vestimenta"],
+      "eventos": ["#Eventos", "#Congresos", "#Ferias"],
+      "editorial": ["#EscritoresUruguayos", "#Revistas"]
+    }
+  },
+
+  "cadencia": {
+    "instagram_facebook": ["lunes", "miercoles", "viernes"],
+    "linkedin": ["martes", "jueves"],
+    "hora_publicacion": "09:30",
+    "zona_horaria": "America/Montevideo"
+  },
+
+  "linkedin": {
+    "audiencia": "Responsables de marketing, de compras y dueños de marca.",
+    "tono": "Analítico, sin emojis, sin urgencia comercial. Aporta un criterio técnico o de negocio antes de mencionar el servicio. Largo permitido: 120 a 200 palabras.",
+    "cierre": "Puede cerrar con una línea institucional sobria, no con un CTA de venta."
+  },
+
+  "desambiguacion": "En Uruguay 'calco' significa coloquialmente adhesivo o pegotín para vehículos. Existen además Calco Impresos y Calco Sport Adhesivos, empresas distintas y no relacionadas. Escribir siempre 'Calco Industria Gráfica' completo."
+}
