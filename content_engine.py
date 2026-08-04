@@ -513,6 +513,58 @@ def generar(cliente, modelo, marca, esqueleto, red, ganchos_usados, temas_usados
 # ESCRITURA
 # ---------------------------------------------------------------------------
 
+def _normalizar(texto):
+    """Simplifica un texto para comparar similitud, ignorando may/min,
+    puntuación y espacios de más."""
+    t = texto.lower().strip()
+    t = re.sub(r"[¿?¡!.,:;\"']", "", t)
+    t = re.sub(r"\s+", " ", t)
+    return t
+
+
+def _son_parecidos(a, b, umbral=0.82):
+    """
+    Similitud simple por palabras compartidas. No hace falta una librería
+    de NLP para esto: alcanza con detectar que dos ganchos son
+    prácticamente el mismo texto, que es el patrón real que se vio en
+    calendarios generados (mismo gancho, o casi el mismo, repetido dentro
+    del mismo mes a pesar de la instrucción de no repetir).
+    """
+    pa, pb = set(_normalizar(a).split()), set(_normalizar(b).split())
+    if not pa or not pb:
+        return False
+    interseccion = len(pa & pb)
+    union = len(pa | pb)
+    return (interseccion / union) >= umbral
+
+
+def marcar_duplicados(pubs):
+    """
+    Verificación por código, no por instrucción al modelo: recorre las
+    publicaciones ya generadas y, si dos ganchos del mismo mes son
+    iguales o casi iguales, marca ambas con una advertencia visible.
+    No depende de que el modelo haya respetado la instrucción de 'no
+    repetir tema' — la detecta después, de forma determinista.
+    """
+    marcadas = 0
+    for i, p in enumerate(pubs):
+        for j, q in enumerate(pubs):
+            if i >= j:
+                continue
+            g1, g2 = p.get("gancho", ""), q.get("gancho", "")
+            if not g1 or not g2:
+                continue
+            if _normalizar(g1) == _normalizar(g2) or _son_parecidos(g1, g2):
+                p["duplicado_de"] = q["id"]
+                q["duplicado_de"] = p["id"]
+                marcadas += 1
+    if marcadas:
+        print(f"  ATENCIÓN: {marcadas} par(es) de publicaciones con gancho "
+              f"igual o muy parecido dentro del mismo mes. Marcadas para "
+              f"revisión manual antes de publicar.")
+    return pubs
+
+
 def fusionar(esqueleto, generado, marca):
     por_id = {g["id"]: g for g in generado}
     salida = []
@@ -538,7 +590,7 @@ def fusionar(esqueleto, generado, marca):
 
 
 def escribir_markdown(pubs, anio, mes, ruta):
-    nombre_pilar = {}
+    duplicados = [p for p in pubs if p.get("duplicado_de")]
     lineas = [
         f"# Calendario Editorial · {NOMBRE_MES[mes]} {anio}",
         f"## Calco Industria Gráfica",
@@ -546,9 +598,18 @@ def escribir_markdown(pubs, anio, mes, ruta):
         f"**Generado automáticamente** · {len(pubs)} publicaciones",
         "**Todo el copy está listo para copiar y pegar.**",
         "",
-        "---",
-        "",
     ]
+
+    if duplicados:
+        lineas += [
+            "> ⚠️ **REVISAR ANTES DE PUBLICAR:** se detectaron publicaciones "
+            "con gancho igual o muy parecido dentro de este mes. Están "
+            "marcadas más abajo con ⚠️. Elegir una y reescribir o "
+            "descartar la otra antes de programar.",
+            "",
+        ]
+
+    lineas += ["---", ""]
 
     ig = [p for p in pubs if p["red"] == "instagram_facebook"]
     li = [p for p in pubs if p["red"] == "linkedin"]
@@ -560,12 +621,18 @@ def escribir_markdown(pubs, anio, mes, ruta):
             etiqueta = p["pilar"]
             if p.get("vertical"):
                 etiqueta += f" · {p['vertical']}"
+            alerta = " ⚠️ POSIBLE DUPLICADO" if p.get("duplicado_de") else ""
             lineas += [
-                f"### 📅 {p['dia_semana'].capitalize()} {f.day} de {NOMBRE_MES[mes]} · {etiqueta}",
+                f"### 📅 {p['dia_semana'].capitalize()} {f.day} de {NOMBRE_MES[mes]} · {etiqueta}{alerta}",
                 f"**Formato:** {p['formato']} · **Hora:** {p['hora']}",
                 f"**Imagen a conseguir:** {p['imagen']}",
                 "",
             ]
+            if p.get("duplicado_de"):
+                lineas += [
+                    f"⚠️ *Se parece a la publicación `{p['duplicado_de']}` de este mismo mes. Revisar antes de programar.*",
+                    "",
+                ]
             for parrafo in p["copy"].split("\n\n"):
                 lineas.append(f"> {parrafo.strip()}")
                 lineas.append(">")
@@ -680,6 +747,8 @@ def main():
     if not pubs:
         print("No se generó ninguna publicación. Revisar el archivo de fallo.")
         sys.exit(1)
+
+    pubs = marcar_duplicados(pubs)
 
     destino = DIR_CONTENIDO / f"{anio}-{mes:02d}"
     destino.mkdir(parents=True, exist_ok=True)
