@@ -513,16 +513,26 @@ def generar(cliente, modelo, marca, esqueleto, red, ganchos_usados, temas_usados
 # ESCRITURA
 # ---------------------------------------------------------------------------
 
+_PALABRAS_VACIAS = {
+    "el", "la", "los", "las", "un", "una", "unos", "unas", "de", "del",
+    "que", "y", "es", "en", "a", "por", "para", "con", "tu", "te", "se",
+    "no", "lo", "su", "al", "o", "si", "cómo", "qué", "cuál", "cuáles",
+    "más", "muy", "también", "así", "eso", "esto", "esa", "ese", "esto",
+}
+
+
 def _normalizar(texto):
     """Simplifica un texto para comparar similitud, ignorando may/min,
-    puntuación y espacios de más."""
+    puntuación, espacios de más y palabras vacías (para no confundir dos
+    ganchos por compartir 'qué', 'es', 'el', etc.)."""
     t = texto.lower().strip()
     t = re.sub(r"[¿?¡!.,:;\"']", "", t)
     t = re.sub(r"\s+", " ", t)
-    return t
+    palabras = [w for w in t.split() if w not in _PALABRAS_VACIAS]
+    return " ".join(palabras) if palabras else t
 
 
-def _son_parecidos(a, b, umbral=0.82):
+def _son_parecidos(a, b, umbral=0.55):
     """
     Similitud simple por palabras compartidas. No hace falta una librería
     de NLP para esto: alcanza con detectar que dos ganchos son
@@ -538,15 +548,23 @@ def _son_parecidos(a, b, umbral=0.82):
     return (interseccion / union) >= umbral
 
 
-def marcar_duplicados(pubs):
+def marcar_duplicados(pubs, ganchos_mes_anterior=None):
     """
     Verificación por código, no por instrucción al modelo: recorre las
-    publicaciones ya generadas y, si dos ganchos del mismo mes son
-    iguales o casi iguales, marca ambas con una advertencia visible.
-    No depende de que el modelo haya respetado la instrucción de 'no
-    repetir tema' — la detecta después, de forma determinista.
+    publicaciones ya generadas y, si dos ganchos son iguales o casi
+    iguales, marca ambas con una advertencia visible. No depende de que
+    el modelo haya respetado la instrucción de 'no repetir tema' — la
+    detecta después, de forma determinista.
+
+    Compara en dos direcciones:
+    1. Dentro del mes que se está generando (como antes).
+    2. Contra los ganchos del mes anterior, que es el caso que se detectó
+       en la práctica: el modelo repite un gancho de hace 30 días aunque
+       el prompt le diga explícitamente que no lo haga.
     """
     marcadas = 0
+
+    # 1) Dentro del mismo mes
     for i, p in enumerate(pubs):
         for j, q in enumerate(pubs):
             if i >= j:
@@ -558,10 +576,25 @@ def marcar_duplicados(pubs):
                 p["duplicado_de"] = q["id"]
                 q["duplicado_de"] = p["id"]
                 marcadas += 1
+
+    # 2) Contra el mes anterior
+    if ganchos_mes_anterior:
+        for p in pubs:
+            if p.get("duplicado_de"):
+                continue  # ya marcada por el chequeo del mismo mes
+            g1 = p.get("gancho", "")
+            if not g1:
+                continue
+            for g2 in ganchos_mes_anterior:
+                if _normalizar(g1) == _normalizar(g2) or _son_parecidos(g1, g2):
+                    p["duplicado_de"] = "un post del mes anterior"
+                    marcadas += 1
+                    break
+
     if marcadas:
-        print(f"  ATENCIÓN: {marcadas} par(es) de publicaciones con gancho "
-              f"igual o muy parecido dentro del mismo mes. Marcadas para "
-              f"revisión manual antes de publicar.")
+        print(f"  ATENCIÓN: {marcadas} publicación(es) con gancho igual o "
+              f"muy parecido a otra (del mismo mes o del anterior). "
+              f"Marcadas para revisión manual antes de publicar.")
     return pubs
 
 
@@ -748,7 +781,7 @@ def main():
         print("No se generó ninguna publicación. Revisar el archivo de fallo.")
         sys.exit(1)
 
-    pubs = marcar_duplicados(pubs)
+    pubs = marcar_duplicados(pubs, ganchos_mes_anterior=ganchos_prev)
 
     destino = DIR_CONTENIDO / f"{anio}-{mes:02d}"
     destino.mkdir(parents=True, exist_ok=True)
