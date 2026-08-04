@@ -293,21 +293,24 @@ def mezclar_hashtags(marca, pilar, vertical, producto_hint=None):
 # ---------------------------------------------------------------------------
 
 def ganchos_previos(anio, mes):
-    """Lee el mes anterior para no repetir ganchos."""
+    """Lee el mes anterior para no repetir ganchos ni temas de producto."""
     m_prev = mes - 1 or 12
     a_prev = anio if mes > 1 else anio - 1
     prev = DIR_CONTENIDO / f"{a_prev}-{m_prev:02d}" / "calendario.json"
     if not prev.exists():
-        return []
+        return [], []
     try:
         with open(prev, encoding="utf-8") as f:
             data = json.load(f)
-        return [p.get("gancho", "") for p in data.get("publicaciones", []) if p.get("gancho")]
+        pubs = data.get("publicaciones", [])
+        ganchos = [p.get("gancho", "") for p in pubs if p.get("gancho")]
+        productos = [p.get("producto", "") for p in pubs if p.get("producto")]
+        return ganchos, productos
     except Exception:
-        return []
+        return [], []
 
 
-def construir_prompt(marca, esqueleto, red, ganchos_usados):
+def construir_prompt(marca, esqueleto, red, ganchos_usados, temas_usados_este_mes):
     pilares_txt = "\n".join(
         f"- {p['clave']}: {p['nombre']}. {p['objetivo']}" for p in marca["pilares"]
     )
@@ -347,6 +350,22 @@ def construir_prompt(marca, esqueleto, red, ganchos_usados):
             f"parafrasearlos:\n{lista}"
         )
 
+    diversidad = ""
+    if temas_usados_este_mes:
+        conteo = {}
+        for t in temas_usados_este_mes:
+            conteo[t] = conteo.get(t, 0) + 1
+        repetidos = [t for t, n in conteo.items() if n >= 1]
+        if repetidos:
+            lista_temas = ", ".join(sorted(repetidos))
+            diversidad = (
+                "\n\nDIVERSIDAD DE TEMA DENTRO DE ESTE MISMO MES. Ya se usaron "
+                f"como tema principal: {lista_temas}. No repitas el mismo "
+                "producto ni el mismo asunto de fondo (por ejemplo, si ya se "
+                "habló del depósito legal, no lo vuelvas a usar como eje de "
+                "otra publicación este mes, aunque cambies las palabras)."
+            )
+
     grilla = json.dumps(esqueleto, ensure_ascii=False, indent=2)
 
     return f"""Sos el redactor de contenidos de {marca['empresa']['nombre']}, una {marca['empresa']['rubro']} en {marca['empresa']['ubicacion']}, en actividad desde {marca['empresa']['desde']}, que atiende {marca['empresa']['zona_servicio']}.
@@ -376,7 +395,7 @@ RED Y FORMATO
 {instruccion_red}
 
 REGLA CRÍTICA
-No inventes datos que no estén en la lista de diferenciales o productos. Nada de plazos concretos en horas o días, cantidades mínimas, precios, nombres de certificaciones, ni nombres de clientes. Si un texto necesitaría un dato así para funcionar, reformulalo para no necesitarlo.{evitar}
+No inventes datos que no estén en la lista de diferenciales o productos. Nada de plazos concretos en horas o días, cantidades mínimas, precios, nombres de certificaciones, ni nombres de clientes. Nunca cites números de ley, artículos o normativas específicas: si mencionás una obligación legal (como el depósito legal), describila en términos generales, sin número de ley, porque no está verificado y un dato legal incorrecto con el nombre de la empresa es un riesgo real. Si un texto necesitaría un dato así para funcionar, reformulalo para no necesitarlo.{evitar}{diversidad}
 
 TAREA
 Para cada publicación de la grilla, escribí el contenido. Respetá el pilar, el vertical y el CTA asignados.
@@ -446,7 +465,7 @@ def _llamar_api(cliente, modelo, prompt, intentos=2):
     return None, (ultimo_texto, "sin datos"), False
 
 
-def generar(cliente, modelo, marca, esqueleto, red, ganchos_usados):
+def generar(cliente, modelo, marca, esqueleto, red, ganchos_usados, temas_usados_meses_previos):
     if not esqueleto:
         return []
 
@@ -456,10 +475,15 @@ def generar(cliente, modelo, marca, esqueleto, red, ganchos_usados):
 
     resultado = []
     ganchos_acumulados = list(ganchos_usados)
+    # Temas de producto usados este mes, dentro de esta misma red. Arranca
+    # con los de meses previos por si el modelo insiste en el mismo tema
+    # apenas cambia el mes, pero lo que más pesa es lo que se va acumulando
+    # tanda a tanda dentro de esta corrida.
+    temas_este_mes = []
 
     for n, tanda in enumerate(tandas, 1):
         print(f"    Tanda {n}/{len(tandas)} ({len(tanda)} publicaciones)")
-        prompt = construir_prompt(marca, tanda, red, ganchos_acumulados)
+        prompt = construir_prompt(marca, tanda, red, ganchos_acumulados, temas_este_mes)
         datos, error, fatal = _llamar_api(cliente, modelo, prompt)
 
         if error is not None:
@@ -476,9 +500,11 @@ def generar(cliente, modelo, marca, esqueleto, red, ganchos_usados):
             continue
 
         resultado.extend(datos)
-        # Los ganchos de esta tanda alimentan el prompt de la siguiente,
-        # para que tampoco se repitan entre tandas del mismo mes.
+        # Los ganchos y los temas de esta tanda alimentan el prompt de la
+        # siguiente, para que ni el gancho ni el tema de fondo se repitan
+        # dentro del mismo mes.
         ganchos_acumulados.extend(d.get("gancho", "") for d in datos if d.get("gancho"))
+        temas_este_mes.extend(d.get("producto", "") for d in datos if d.get("producto"))
 
     return resultado
 
@@ -636,12 +662,18 @@ def main():
     cliente, modelo, proveedor = crear_cliente()
     print(f"  Proveedor: {proveedor} · modelo: {modelo}")
 
-    usados = ganchos_previos(anio, mes)
-    if usados:
-        print(f"  {len(usados)} ganchos previos cargados para no repetir")
+    ganchos_prev, temas_prev = ganchos_previos(anio, mes)
+    if ganchos_prev:
+        print(f"  {len(ganchos_prev)} ganchos previos cargados para no repetir")
 
-    gen_ig = generar(cliente, modelo, marca, esq_ig, "instagram_facebook", usados)
-    gen_li = generar(cliente, modelo, marca, esq_li, "linkedin", usados)
+    # Instagram/Facebook y LinkedIn comparten la lista de temas usados:
+    # si el post de Instagram del día 7 habló del depósito legal, el de
+    # LinkedIn del día 10 no debería volver sobre lo mismo.
+    gen_ig = generar(cliente, modelo, marca, esq_ig, "instagram_facebook",
+                      ganchos_prev, temas_prev)
+    temas_tras_ig = temas_prev + [p.get("producto", "") for p in gen_ig if p.get("producto")]
+    gen_li = generar(cliente, modelo, marca, esq_li, "linkedin",
+                      ganchos_prev, temas_tras_ig)
 
     pubs = fusionar(esq_ig, gen_ig, marca) + fusionar(esq_li, gen_li, marca)
 
