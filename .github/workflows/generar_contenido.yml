@@ -1,0 +1,68 @@
+name: Generar calendario editorial
+
+on:
+  schedule:
+    - cron: '0 12 25 * *'
+  workflow_dispatch:
+    inputs:
+      mes:
+        description: 'Mes a generar (AAAA-MM). Vacío = el mes que viene.'
+        required: false
+        type: string
+      proveedor:
+        description: 'Proveedor de IA'
+        required: false
+        default: 'anthropic'
+        type: choice
+        options:
+          - anthropic
+          - deepseek
+
+permissions:
+  contents: write
+
+jobs:
+  generar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Generar el calendario
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          PROVEEDOR_IA: ${{ inputs.proveedor || 'anthropic' }}
+        run: |
+          if [ -n "${{ inputs.mes }}" ]; then
+            python content_engine.py --mes "${{ inputs.mes }}"
+          else
+            python content_engine.py
+          fi
+
+      - name: Guardar el resultado en el repositorio
+        run: |
+          git config user.name  "Calco Marketing Bot"
+          git config user.email "marketing@calco.uy"
+          git add contenido/
+          if git diff --staged --quiet; then
+            echo "No hay cambios para guardar."
+          else
+            git commit -m "Calendario editorial generado automáticamente"
+            git push
+          fi
+
+      - name: Avisar si falló
+        if: failure()
+        run: |
+          echo "La generación del calendario falló."
+          echo "Revisar el secreto del proveedor elegido y su saldo."
