@@ -27,7 +27,10 @@
         "#Canelones",
         "#CiudadDeLaCosta",
         "#Troquelado"
-      ]
+      ],
+      "publicado": true,
+      "publicado_instagram": true,
+      "publicado_facebook": true
     },
     {
       "id": "ig-2026-09-04",
