@@ -9,7 +9,6 @@
     "desde": 2005,
     "rubro": "imprenta e industria gráfica"
   },
-
   "voz": {
     "registro": "Español uruguayo, tratamiento de vos. Profesional sin ser acartonado.",
     "principios": [
@@ -23,7 +22,10 @@
       "'Imprenta certificada' y 'en actividad desde 2005' son dos datos separados. Nunca combinarlos en una frase que implique 'certificada desde 2005' o 'certificados desde hace X años': no está verificado que la certificación date de la fundación. Mencionarlos por separado si hace falta usar los dos.",
       "No repetir la misma frase de cierre institucional (por ejemplo 'Calco Industria Gráfica. Imprenta certificada desde 2005...') de forma idéntica en más de una publicación del mismo mes. Si se cierra con una línea de marca, variar la redacción cada vez o no usar cierre institucional en todos los posts.",
       "Frases cortas. Un post no es un folleto.",
-      "Se le habla a una persona que decide compras, no a una multitud."
+      "Se le habla a una persona que decide compras, no a una multitud.",
+      "CERTIFICACIÓN — cómo nombrarla: escribir \"UNIT-ISO 9001\", nunca \"imprenta certificada\", \"calidad certificada\" ni \"certificados\" a secas. UNIT (el organismo certificador) exige que su nombre conste siempre; omitirlo incumple el instructivo CS/PI 016 y se controla en las auditorías. Tampoco escribir \"certificados por ISO\": ISO no certifica empresas.",
+      "CERTIFICACIÓN — dónde NO nombrarla: el certificado cubre estuches, etiquetas, libros, cuadernos, revistas e impresos publicitarios. NO cubre gigantografías, señalética, arquigrafía ni merchandising. En publicaciones sobre esos productos no se menciona la certificación, porque daría a entender un alcance mayor al real, que es justamente lo que UNIT prohíbe.",
+      "CERTIFICACIÓN — no mezclar con la antigüedad: \"UNIT-ISO 9001\" y \"en actividad desde 2005\" son datos separados. La certificación inicial es de noviembre de 2021, no de 2005. Nunca escribir \"certificados desde 2005\" ni nada que sugiera esa continuidad."
     ],
     "prohibido": [
       "Emojis en LinkedIn (salvo excepción justificada)",
@@ -31,12 +33,13 @@
       "Signos de exclamación múltiples",
       "Mayúsculas para enfatizar",
       "Preguntas retóricas encadenadas",
-      "La palabra 'calco' sola sin 'Industria Gráfica' (se confunde con adhesivos para autos)"
+      "La palabra 'calco' sola sin 'Industria Gráfica' (se confunde con adhesivos para autos)",
+      "\"Imprenta certificada\" o \"calidad certificada\" sin nombrar a UNIT",
+      "\"Certificados por ISO\" — ISO no certifica empresas, certifica UNIT"
     ]
   },
-
   "diferenciales": [
-    "Imprenta certificada",
+    "Sistema de gestión de la calidad certificado por UNIT según UNIT-ISO 9001:2015 (certificado Nº CS 551/R1). En texto corto se escribe \"UNIT-ISO 9001\"; nunca \"imprenta certificada\" ni \"calidad certificada\" a secas.",
     "En actividad desde 2005, más de 20 años",
     "Troquelado propio y departamento de desarrollo a medida",
     "Línea de impresos urgentes",
@@ -45,7 +48,6 @@
     "Proceso completo: diseño, producción y entrega a domicilio",
     "Trabajan para cualquier cantidad"
   ],
-
   "productos": {
     "packaging": {
       "nombre": "Packaging y estuchería",
@@ -83,68 +85,208 @@
       "detalle": "Línea específica para trabajos con plazos ajustados."
     }
   },
-
   "verticales": [
-    { "clave": "alimentos", "nombre": "Alimentos y bebidas", "angulo": "Materiales compatibles con alimentos. Etiquetas para cervecerías, bodegas, conservas, salsas. Góndola." },
-    { "clave": "farmacia", "nombre": "Farmacia y cosmética", "angulo": "Estuches de alta precisión, prospectos plegados, terminaciones premium: relieve, barniz sectorizado, laminados." },
-    { "clave": "gastronomia", "nombre": "Gastronomía", "angulo": "Cajas de delivery autoarmables, manteles de papel, insumos de presentación. La caja es el único contacto con la marca." },
-    { "clave": "quimicos", "nombre": "Químicos y limpieza", "angulo": "Etiquetas resistentes a la exposición del contenido. Normativa de rotulado." },
-    { "clave": "tiendas", "nombre": "Tiendas y vestimenta", "angulo": "Etiquetas colgantes, bolsas, packaging de retail, material de punto de venta." },
-    { "clave": "eventos", "nombre": "Congresos y eventos", "angulo": "Folletería, roll-ups, exhibidores, credenciales. Plazos cortos y fecha fija." },
-    { "clave": "editorial", "nombre": "Editoriales y autores", "angulo": "Encuadernación, depósito legal gratuito, formatos especiales." }
+    {
+      "clave": "alimentos",
+      "nombre": "Alimentos y bebidas",
+      "angulo": "Materiales compatibles con alimentos. Etiquetas para cervecerías, bodegas, conservas, salsas. Góndola."
+    },
+    {
+      "clave": "farmacia",
+      "nombre": "Farmacia y cosmética",
+      "angulo": "Estuches de alta precisión, prospectos plegados, terminaciones premium: relieve, barniz sectorizado, laminados."
+    },
+    {
+      "clave": "gastronomia",
+      "nombre": "Gastronomía",
+      "angulo": "Cajas de delivery autoarmables, manteles de papel, insumos de presentación. La caja es el único contacto con la marca."
+    },
+    {
+      "clave": "quimicos",
+      "nombre": "Químicos y limpieza",
+      "angulo": "Etiquetas resistentes a la exposición del contenido. Normativa de rotulado."
+    },
+    {
+      "clave": "tiendas",
+      "nombre": "Tiendas y vestimenta",
+      "angulo": "Etiquetas colgantes, bolsas, packaging de retail, material de punto de venta."
+    },
+    {
+      "clave": "eventos",
+      "nombre": "Congresos y eventos",
+      "angulo": "Folletería, roll-ups, exhibidores, credenciales. Plazos cortos y fecha fija."
+    },
+    {
+      "clave": "editorial",
+      "nombre": "Editoriales y autores",
+      "angulo": "Encuadernación, depósito legal gratuito, formatos especiales."
+    }
   ],
-
   "pilares": [
-    { "clave": "producto", "nombre": "Producto en detalle", "peso": 25, "objetivo": "Mostrar calidad y terminación. Detener el scroll con un detalle material concreto." },
-    { "clave": "produccion", "nombre": "Detrás de la producción", "peso": 20, "objetivo": "Generar confianza mostrando máquinas y proceso. Casi ninguna imprenta uruguaya lo hace." },
-    { "clave": "vertical", "nombre": "Vertical / caso de uso", "peso": 20, "objetivo": "Hablarle directo a un rubro específico. Es el pilar que más convierte." },
-    { "clave": "educativo", "nombre": "Educativo / técnico", "peso": 20, "objetivo": "Responder una duda real del cliente. Posiciona en Google y en buscadores de IA." },
-    { "clave": "credibilidad", "nombre": "Credibilidad", "peso": 10, "objetivo": "20 años, certificación, depósito legal gratuito, entrega a domicilio." },
-    { "clave": "servicio", "nombre": "Servicio / urgencias", "peso": 5, "objetivo": "Alta intención. Trae consultas el mismo día." }
+    {
+      "clave": "producto",
+      "nombre": "Producto en detalle",
+      "peso": 25,
+      "objetivo": "Mostrar calidad y terminación. Detener el scroll con un detalle material concreto."
+    },
+    {
+      "clave": "produccion",
+      "nombre": "Detrás de la producción",
+      "peso": 20,
+      "objetivo": "Generar confianza mostrando máquinas y proceso. Casi ninguna imprenta uruguaya lo hace."
+    },
+    {
+      "clave": "vertical",
+      "nombre": "Vertical / caso de uso",
+      "peso": 20,
+      "objetivo": "Hablarle directo a un rubro específico. Es el pilar que más convierte."
+    },
+    {
+      "clave": "educativo",
+      "nombre": "Educativo / técnico",
+      "peso": 20,
+      "objetivo": "Responder una duda real del cliente. Posiciona en Google y en buscadores de IA."
+    },
+    {
+      "clave": "credibilidad",
+      "nombre": "Credibilidad",
+      "peso": 10,
+      "objetivo": "20 años, certificación, depósito legal gratuito, entrega a domicilio."
+    },
+    {
+      "clave": "servicio",
+      "nombre": "Servicio / urgencias",
+      "peso": 5,
+      "objetivo": "Alta intención. Trae consultas el mismo día."
+    }
   ],
-
   "ctas": [
     "Presupuestá en calco.uy (link en bio)",
     "Escribinos por WhatsApp al 093944783",
     "Contanos qué necesitás en los comentarios",
     "SIN_CTA"
   ],
-
   "hashtags": {
-    "base": ["#ImprentaUruguay", "#IndustriaGrafica", "#HechoEnUruguay"],
-    "geo": ["#Montevideo", "#Canelones", "#CiudadDeLaCosta"],
+    "base": [
+      "#ImprentaUruguay",
+      "#IndustriaGrafica",
+      "#HechoEnUruguay"
+    ],
+    "geo": [
+      "#Montevideo",
+      "#Canelones",
+      "#CiudadDeLaCosta"
+    ],
     "producto": {
-      "packaging": ["#PackagingUruguay", "#Estucheria", "#Troquelado", "#DiseñoDeEmpaque"],
-      "etiquetas": ["#EtiquetasUruguay", "#EtiquetasEnRollo", "#Etiquetas"],
-      "papeleria": ["#PapeleriaEmpresarial", "#IdentidadCorporativa"],
-      "editorial": ["#Libros", "#Editorial", "#PublicarUnLibro"],
-      "merchandising": ["#Merchandising", "#PuntoDeVenta"],
-      "senaletica": ["#Senaletica", "#Gigantografia", "#Arquigrafia"],
-      "urgentes": ["#ImpresosUrgentes", "#ImpresionRapida"]
+      "packaging": [
+        "#PackagingUruguay",
+        "#Estucheria",
+        "#Troquelado",
+        "#DiseñoDeEmpaque"
+      ],
+      "etiquetas": [
+        "#EtiquetasUruguay",
+        "#EtiquetasEnRollo",
+        "#Etiquetas"
+      ],
+      "papeleria": [
+        "#PapeleriaEmpresarial",
+        "#IdentidadCorporativa"
+      ],
+      "editorial": [
+        "#Libros",
+        "#Editorial",
+        "#PublicarUnLibro"
+      ],
+      "merchandising": [
+        "#Merchandising",
+        "#PuntoDeVenta"
+      ],
+      "senaletica": [
+        "#Senaletica",
+        "#Gigantografia",
+        "#Arquigrafia"
+      ],
+      "urgentes": [
+        "#ImpresosUrgentes",
+        "#ImpresionRapida"
+      ]
     },
     "vertical": {
-      "alimentos": ["#AlimentosYBebidas", "#Cerveceria", "#Bodega"],
-      "farmacia": ["#Cosmetica", "#Farmacia", "#PackagingPremium"],
-      "gastronomia": ["#Gastronomia", "#Delivery", "#Restaurantes"],
-      "quimicos": ["#Quimicos", "#Limpieza"],
-      "tiendas": ["#Retail", "#Tiendas", "#Vestimenta"],
-      "eventos": ["#Eventos", "#Congresos", "#Ferias"],
-      "editorial": ["#EscritoresUruguayos", "#Revistas"]
+      "alimentos": [
+        "#AlimentosYBebidas",
+        "#Cerveceria",
+        "#Bodega"
+      ],
+      "farmacia": [
+        "#Cosmetica",
+        "#Farmacia",
+        "#PackagingPremium"
+      ],
+      "gastronomia": [
+        "#Gastronomia",
+        "#Delivery",
+        "#Restaurantes"
+      ],
+      "quimicos": [
+        "#Quimicos",
+        "#Limpieza"
+      ],
+      "tiendas": [
+        "#Retail",
+        "#Tiendas",
+        "#Vestimenta"
+      ],
+      "eventos": [
+        "#Eventos",
+        "#Congresos",
+        "#Ferias"
+      ],
+      "editorial": [
+        "#EscritoresUruguayos",
+        "#Revistas"
+      ]
     }
   },
-
   "cadencia": {
-    "instagram_facebook": ["lunes", "miercoles", "viernes"],
-    "linkedin": ["martes", "jueves"],
+    "instagram_facebook": [
+      "lunes",
+      "miercoles",
+      "viernes"
+    ],
+    "linkedin": [
+      "martes",
+      "jueves"
+    ],
     "hora_publicacion": "09:30",
     "zona_horaria": "America/Montevideo"
   },
-
   "linkedin": {
     "audiencia": "Responsables de marketing, de compras y dueños de marca.",
     "tono": "Analítico, sin emojis, sin urgencia comercial. Aporta un criterio técnico o de negocio antes de mencionar el servicio. Formal en el fondo (la seriedad va en el contenido y la estructura), pero SIGUE USANDO VOS: 'tu empresa', 'vos sabés', 'te conviene', nunca 'usted' ni 'su empresa'. Largo permitido: 120 a 200 palabras.",
     "cierre": "Puede cerrar con una línea institucional sobria, no con un CTA de venta."
   },
-
-  "desambiguacion": "En Uruguay 'calco' significa coloquialmente adhesivo o pegotín para vehículos. Existen además Calco Impresos y Calco Sport Adhesivos, empresas distintas y no relacionadas. Escribir siempre 'Calco Industria Gráfica' completo."
+  "desambiguacion": "En Uruguay 'calco' significa coloquialmente adhesivo o pegotín para vehículos. Existen además Calco Impresos y Calco Sport Adhesivos, empresas distintas y no relacionadas. Escribir siempre 'Calco Industria Gráfica' completo.",
+  "certificacion": {
+    "norma": "UNIT-ISO 9001:2015",
+    "organismo": "UNIT — Instituto Uruguayo de Normas Técnicas",
+    "numero_certificado": "CS 551/R1",
+    "vigente_hasta": "2027-11-16",
+    "certificacion_inicial": "2021-11-17",
+    "alcance": "Desarrollo, comercialización, producción y distribución de estuches, etiquetas, libros, cuadernos, revistas e impresos publicitarios en general.",
+    "productos_dentro_del_alcance": [
+      "packaging",
+      "etiquetas",
+      "editorial",
+      "papeleria",
+      "urgentes"
+    ],
+    "productos_FUERA_del_alcance": [
+      "merchandising",
+      "senaletica"
+    ],
+    "formula_corta": "UNIT-ISO 9001",
+    "formula_completa": "Calco Industria Gráfica dispone de un sistema de gestión de la calidad certificado de acuerdo a la norma UNIT-ISO 9001:2015 por UNIT (Instituto Uruguayo de Normas Técnicas), para el alcance: desarrollo, comercialización, producción y distribución de estuches, etiquetas, libros, cuadernos, revistas e impresos publicitarios en general. Certificado Nº CS 551/R1.",
+    "nota_interna": "Reglas tomadas del instructivo CS/PI 016 Rev.8 de UNIT. UNIT exige que siempre conste el organismo certificador, prohíbe términos ambiguos como 'calidad certificada', y prohíbe inducir a creer que el alcance es más amplio que el real. El cumplimiento se evalúa en las auditorías de mantenimiento. Antes de publicar un uso nuevo de la marca UNIT o una referencia nueva a la certificación, UNIT pide aprobación previa."
+  }
 }
