@@ -337,16 +337,11 @@ def construir_prompt(marca, esqueleto, red, ganchos_usados, temas_usados_este_me
             "Largo: 50 a 110 palabras. Primera línea corta y con gancho: es lo "
             "único que se ve antes del 'ver más'.\n"
             "Máximo 2 emojis, y solo si aportan.\n"
-            "El CTA indicado en cada publicación va al final, redactado con "
-            "naturalidad, no copiado literal. Si dice SIN_CTA, no poner ningún "
-            "llamado a la acción.\n"
-            "IMPORTANTE — NO DUPLICAR EL LLAMADO A LA ACCIÓN: el cuerpo del "
-            "texto NO debe cerrar con una pregunta al lector ni con un pedido "
-            "propio (nada de '¿Lo probamos?', '¿Hablamos?', '¿Querés saber "
-            "más?', 'Consultanos'). Ese lugar ya lo ocupa el CTA asignado. "
-            "El último párrafo del cuerpo tiene que cerrar el argumento — un "
-            "dato, una consecuencia práctica, una afirmación — y ahí termina. "
-            "Dos pedidos seguidos suenan insistentes y restan credibilidad."
+            "NO escribas el CTA dentro del texto: el sistema lo agrega "
+            "aparte, al final. Vos escribí solo el cuerpo, y cerralo con "
+            "el argumento (un dato, una consecuencia práctica, una "
+            "afirmación). Tampoco cierres con una pregunta al lector "
+            "('¿Lo probamos?', '¿Hablamos?'): ese lugar ya lo ocupa el CTA."
         )
 
     evitar = ""
@@ -606,6 +601,56 @@ def marcar_duplicados(pubs, ganchos_mes_anterior=None):
     return pubs
 
 
+def _quitar_cta_duplicado(copy_texto, cta):
+    """El CTA lo agrega el sistema aparte, pero el modelo a veces lo
+    escribe igual al final del cuerpo. Resultado: el mismo pedido dos
+    veces seguidas, que suena insistente.
+
+    Esta función lo detecta y lo saca del cuerpo. Es verificación por
+    código, no una instrucción al modelo: no depende de que obedezca.
+
+    Detecta dos casos:
+    1. El CTA copiado literal o casi literal ("Contanos qué necesitás en
+       los comentarios").
+    2. Una variante reconocible del mismo pedido, comparando las
+       palabras significativas del último párrafo contra las del CTA.
+    """
+    if not copy_texto or not cta or cta == "SIN_CTA":
+        return copy_texto
+
+    parrafos = [p for p in copy_texto.split("\n\n") if p.strip()]
+    if len(parrafos) <= 1:
+        return copy_texto  # no dejar el copy vacío
+
+    ultimo = parrafos[-1].strip()
+
+    # Palabras significativas del CTA, sin relleno ni puntuación
+    def _clave(t):
+        t = t.lower()
+        t = re.sub(r"[^\wáéíóúñ\s]", " ", t)
+        return {w for w in t.split()
+                if w not in _PALABRAS_VACIAS and len(w) > 2}
+
+    pal_cta = _clave(cta)
+    pal_ult = _clave(ultimo)
+
+    if not pal_cta or not pal_ult:
+        return copy_texto
+
+    # Cuántas palabras del CTA aparecen en el último párrafo
+    compartidas = len(pal_cta & pal_ult)
+    proporcion = compartidas / len(pal_cta)
+
+    # Umbral alto y párrafo corto: es el CTA repetido, no un cierre que
+    # casualmente comparte alguna palabra.
+    es_duplicado = proporcion >= 0.6 and len(pal_ult) <= len(pal_cta) + 4
+
+    if es_duplicado:
+        return "\n\n".join(parrafos[:-1]).strip()
+
+    return copy_texto
+
+
 def fusionar(esqueleto, generado, marca):
     por_id = {g["id"]: g for g in generado}
     salida = []
@@ -614,9 +659,10 @@ def fusionar(esqueleto, generado, marca):
         if not g:
             continue
         item = dict(e)
+        copy_limpio = _quitar_cta_duplicado(g.get("copy", ""), e.get("cta", ""))
         item.update({
             "gancho": g.get("gancho", ""),
-            "copy": g.get("copy", ""),
+            "copy": copy_limpio,
             "producto": g.get("producto", ""),
             "objeto_visual": g.get("objeto_visual", ""),
             "imagen": g.get("imagen", ""),
