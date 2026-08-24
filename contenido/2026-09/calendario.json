@@ -450,7 +450,7 @@
       "hora": "09:30",
       "gancho": "Una bolsa es una superficie de marca. No un simple envoltorio.",
       "copy": "Una bolsa es una superficie de marca. No un simple envoltorio.\n\nPara una tienda de ropa, la bolsa que se lleva el cliente es el último contacto con la marca dentro del local. Y muchas veces, el primero que ve alguien en la calle.\n\nEse soporte tiene una función práctica: tiene que resistir el uso del día a día. Pero también tiene una función de comunicación: el material, el acabado y la impresión dicen algo de la tienda antes de que el cliente abra la bolsa.\n\nSe puede elegir entre diferentes gramajes de papel, acabados con o sin barniz, y opciones de asa. La decisión depende del peso del producto y del posicionamiento que la marca quiera tener.\n\nEn Calco Industria Gráfica trabajamos con tiendas y marcas de retail para definir la bolsa correcta, no la más cara ni la más barata, sino la que corresponde a cada uso.",
-      "producto": "tiendas",
+      "producto": "merchandising",
       "objeto_visual": "bolsa",
       "imagen": "Varias bolsas de papel de diferentes gramajes y con distintos tipos de asa, sobre una mesa de exhibición en un local, con luz natural y fondo neutro.",
       "hashtags": []
@@ -484,7 +484,7 @@
       "hora": "09:30",
       "gancho": "La certificación no se cuelga en la pared: se aplica todos los días.",
       "copy": "Desde 2021, Calco Industria Gráfica cuenta con la certificación UNIT-ISO 9001. No es un diploma que cuelga en la recepción: es un sistema de gestión que ordena cómo se trabaja.\n\nEse sistema define cómo se controla un archivo antes de imprimir, cómo se verifica una tirada, cómo se documenta un proceso y cómo se responde si algo sale mal. La certificación no evita el error humano: hace que el error se detecte y no llegue al cliente.\n\nEn actividad desde 2005, acumulamos dos décadas de oficio. La certificación puso orden sobre ese oficio. El resultado es un proceso estable: cada etiqueta, cada libro y cada estuche que sale de nuestro taller pasa por los mismos controles.\n\nLa próxima vez que veas un sello de certificación en una empresa, preguntate si cambia la forma de trabajar o solo la foto del sitio web.",
-      "producto": "libros",
+      "producto": "editorial",
       "objeto_visual": "",
       "imagen": "Foto de una reunión de control de calidad en el taller, con un operario revisando un impreso contra la prueba de color en la mesa.",
       "hashtags": []
