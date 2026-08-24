@@ -109,42 +109,142 @@ def elegible_para_respaldo(pub):
     return True
 
 
-def obtener_imagen_producto(url_producto):
-    """Descarga la página del producto y extrae la imagen principal desde
-    la etiqueta og:image, que casi cualquier plataforma (WooCommerce
-    incluida) publica automáticamente para cada página de producto."""
+HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; CalcoBot/1.0)"}
+
+
+def _descargar_bytes(url):
+    resp = requests.get(url, timeout=TIMEOUT_HTTP, headers=HEADERS)
+    resp.raise_for_status()
+    return resp.content
+
+
+def _es_pagina_de_categoria(url):
+    """WooCommerce marca las categorías con /categoria-producto/ o
+    /product-category/ en la URL. Si la URL configurada en
+    sistema_de_marca.json es una de estas, NUNCA hay que usar su og:image
+    directamente: es el banner genérico del sitio, no una foto de
+    producto."""
+    return "/categoria-producto/" in url or "/product-category/" in url
+
+
+def _slug_de_categoria(url):
+    return url.rstrip("/").split("/")[-1]
+
+
+def _imagen_desde_store_api(url_categoria):
+    """Intento 1 (preferido): la API pública de WooCommerce Store API
+    devuelve productos reales de la categoría, cada uno con su propia
+    foto. Requiere que el sitio la tenga habilitada (viene activada por
+    defecto en WooCommerce moderno, pero puede estar desactivada)."""
+    dominio = "/".join(url_categoria.split("/")[:3])  # https://calco.uy
+    slug = _slug_de_categoria(url_categoria)
+    endpoint = f"{dominio}/wp-json/wc/store/v1/products?category={slug}&per_page=10"
+
     try:
-        resp = requests.get(url_producto, timeout=TIMEOUT_HTTP, headers={
-            "User-Agent": "Mozilla/5.0 (compatible; CalcoBot/1.0)"
-        })
+        resp = requests.get(endpoint, timeout=TIMEOUT_HTTP, headers=HEADERS)
+        resp.raise_for_status()
+        productos = resp.json()
+    except Exception as e:
+        return None, f"Store API no disponible ({e})"
+
+    if not isinstance(productos, list) or not productos:
+        return None, "Store API respondió sin productos para esta categoría"
+
+    for p in productos:
+        imagenes = p.get("images") or []
+        if imagenes and imagenes[0].get("src"):
+            url_imagen = imagenes[0]["src"]
+            try:
+                return _descargar_bytes(url_imagen), None
+            except Exception as e:
+                continue  # probar el siguiente producto de la lista
+
+    return None, "Ningún producto de la categoría tenía foto en la Store API"
+
+
+def _imagen_desde_ficha_individual(url_categoria):
+    """Intento 2 (respaldo): si la Store API no está disponible, se busca
+    en el HTML de la página de categoría un link a una ficha de producto
+    individual real (nunca se usa la imagen de la propia página de
+    categoría, que es genérica), y se saca el og:image de esa ficha."""
+    try:
+        resp = requests.get(url_categoria, timeout=TIMEOUT_HTTP, headers=HEADERS)
         resp.raise_for_status()
     except Exception as e:
-        return None, f"No se pudo abrir {url_producto}: {e}"
+        return None, f"No se pudo abrir {url_categoria}: {e}"
+
+    # Patrón típico de permalink de producto individual en WooCommerce.
+    # Se descarta cualquier link que sea la propia página de categoría.
+    candidatos = re.findall(
+        r'href=["\']([^"\']*/producto/[^"\']+)["\']', resp.text, re.IGNORECASE
+    )
+    candidatos = [c for c in candidatos if c.rstrip("/") != url_categoria.rstrip("/")]
+
+    if not candidatos:
+        return None, ("No se encontró ningún link a una ficha de producto "
+                       "individual dentro de la página de categoría")
+
+    url_producto = urljoin(url_categoria, candidatos[0])
+
+    try:
+        resp_prod = requests.get(url_producto, timeout=TIMEOUT_HTTP, headers=HEADERS)
+        resp_prod.raise_for_status()
+    except Exception as e:
+        return None, f"No se pudo abrir la ficha de producto {url_producto}: {e}"
+
+    match = re.search(
+        r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
+        resp_prod.text, re.IGNORECASE
+    ) or re.search(
+        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+        resp_prod.text, re.IGNORECASE
+    )
+    if not match:
+        return None, f"No se encontró og:image en la ficha {url_producto}"
+
+    url_imagen = urljoin(url_producto, match.group(1))
+    try:
+        return _descargar_bytes(url_imagen), None
+    except Exception as e:
+        return None, f"No se pudo descargar la imagen {url_imagen}: {e}"
+
+
+def obtener_imagen_producto(url_configurada):
+    """Punto de entrada único. IMPORTANTE: nunca devuelve la imagen de una
+    página de categoría (sería el banner genérico del sitio, no una foto
+    de producto real) — siempre busca la foto de un producto específico,
+    por dos vías distintas, y si ninguna funciona, no devuelve nada en
+    vez de arriesgarse a mostrar algo genérico o inventado."""
+    if _es_pagina_de_categoria(url_configurada):
+        imagen, error = _imagen_desde_store_api(url_configurada)
+        if imagen:
+            return imagen, None
+        print(f"    (Store API falló: {error}. Probando respaldo...)")
+        return _imagen_desde_ficha_individual(url_configurada)
+
+    # Si la URL configurada ya es la ficha de un producto puntual (no una
+    # categoría), se puede usar directamente su og:image.
+    try:
+        resp = requests.get(url_configurada, timeout=TIMEOUT_HTTP, headers=HEADERS)
+        resp.raise_for_status()
+    except Exception as e:
+        return None, f"No se pudo abrir {url_configurada}: {e}"
 
     match = re.search(
         r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
         resp.text, re.IGNORECASE
+    ) or re.search(
+        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+        resp.text, re.IGNORECASE
     )
     if not match:
-        # Orden de atributos invertido también es válido HTML
-        match = re.search(
-            r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
-            resp.text, re.IGNORECASE
-        )
-    if not match:
-        return None, f"No se encontró og:image en {url_producto}"
+        return None, f"No se encontró og:image en {url_configurada}"
 
-    url_imagen = urljoin(url_producto, match.group(1))
-
+    url_imagen = urljoin(url_configurada, match.group(1))
     try:
-        img_resp = requests.get(url_imagen, timeout=TIMEOUT_HTTP, headers={
-            "User-Agent": "Mozilla/5.0 (compatible; CalcoBot/1.0)"
-        })
-        img_resp.raise_for_status()
+        return _descargar_bytes(url_imagen), None
     except Exception as e:
         return None, f"No se pudo descargar la imagen {url_imagen}: {e}"
-
-    return img_resp.content, None
 
 
 def armar_html_plantilla(imagen_data_url, nombre_empresa, sitio):
