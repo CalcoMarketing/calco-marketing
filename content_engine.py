@@ -339,7 +339,14 @@ def construir_prompt(marca, esqueleto, red, ganchos_usados, temas_usados_este_me
             "Máximo 2 emojis, y solo si aportan.\n"
             "El CTA indicado en cada publicación va al final, redactado con "
             "naturalidad, no copiado literal. Si dice SIN_CTA, no poner ningún "
-            "llamado a la acción."
+            "llamado a la acción.\n"
+            "IMPORTANTE — NO DUPLICAR EL LLAMADO A LA ACCIÓN: el cuerpo del "
+            "texto NO debe cerrar con una pregunta al lector ni con un pedido "
+            "propio (nada de '¿Lo probamos?', '¿Hablamos?', '¿Querés saber "
+            "más?', 'Consultanos'). Ese lugar ya lo ocupa el CTA asignado. "
+            "El último párrafo del cuerpo tiene que cerrar el argumento — un "
+            "dato, una consecuencia práctica, una afirmación — y ahí termina. "
+            "Dos pedidos seguidos suenan insistentes y restan credibilidad."
         )
 
     evitar = ""

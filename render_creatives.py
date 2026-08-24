@@ -239,9 +239,17 @@ def obtener_imagen_para_post(url_categoria, objeto_visual):
 
 
 def armar_html_plantilla(imagen_data_url, nombre_empresa, sitio):
-    """Plantilla simple: la foto real de fondo, franja de marca abajo.
-    Nada de texto inventado sobre el producto — solo el nombre y el sitio,
-    que son datos ya verificados en el resto del sistema."""
+    """La foto real, recortada a cuadrado 1080x1080, sin nada encima.
+
+    NOTA DE DISEÑO: antes esta plantilla agregaba una franja inferior con
+    el nombre de la empresa y el sitio. Se quitó porque el nombre quedaba
+    triplicado: el logo ya viene impreso en los productos fotografiados,
+    el nombre de usuario de la cuenta ya dice calco.uy, y encima la
+    franja lo repetía una tercera vez. La foto limpia se ve mejor y no
+    compite con el producto.
+
+    Los parámetros nombre_empresa y sitio se mantienen en la firma para
+    no romper la llamada existente, aunque ya no se usen."""
     return f"""
 <!DOCTYPE html>
 <html>
@@ -249,49 +257,17 @@ def armar_html_plantilla(imagen_data_url, nombre_empresa, sitio):
 <meta charset="utf-8">
 <style>
   * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-  body {{ width: 1080px; height: 1080px; overflow: hidden; font-family: Arial, sans-serif; }}
+  body {{ width: 1080px; height: 1080px; overflow: hidden; }}
   .fondo {{
     width: 1080px; height: 1080px;
     background-image: url('{imagen_data_url}');
     background-size: cover;
     background-position: center;
-    position: relative;
-  }}
-  .franja {{
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 140px;
-    background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%);
-    display: flex;
-    align-items: flex-end;
-    padding: 24px 32px;
-  }}
-  .marca {{
-    color: white;
-    font-size: 28px;
-    font-weight: bold;
-  }}
-  .sitio {{
-    color: rgba(255,255,255,0.85);
-    font-size: 18px;
-    margin-left: auto;
-  }}
-  .fila {{
-    display: flex;
-    width: 100%;
-    align-items: baseline;
   }}
 </style>
 </head>
 <body>
-  <div class="fondo">
-    <div class="franja">
-      <div class="fila">
-        <div class="marca">{nombre_empresa}</div>
-        <div class="sitio">{sitio}</div>
-      </div>
-    </div>
-  </div>
+  <div class="fondo"></div>
 </body>
 </html>
 """
