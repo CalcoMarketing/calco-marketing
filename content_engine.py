@@ -412,6 +412,7 @@ Devolvé únicamente un array JSON válido, sin texto antes ni después, sin blo
     "gancho": "la primera línea, hasta 60 caracteres",
     "copy": "el texto completo de la publicación, con saltos de línea como \\n\\n",
     "producto": "la clave del producto principal mencionado, de la lista de PRODUCTOS",
+    "objeto_visual": "el objeto físico concreto del que habla el texto, en 1 a 3 palabras, en singular y en minúscula (por ejemplo: 'caja troquelada', 'estuche', 'bolsa', 'etiqueta en rollo', 'cuaderno', 'libro'). Tiene que ser el objeto que el lector espera VER en la foto al leer este texto. Si el post no habla de un objeto físico puntual, poner cadena vacía.",
     "imagen": "descripción concreta de la foto o video que hay que conseguir en el taller, en una frase, redactada como instrucción para quien la va a tomar"
   }}
 ]
@@ -610,6 +611,7 @@ def fusionar(esqueleto, generado, marca):
             "gancho": g.get("gancho", ""),
             "copy": g.get("copy", ""),
             "producto": g.get("producto", ""),
+            "objeto_visual": g.get("objeto_visual", ""),
             "imagen": g.get("imagen", ""),
         })
         if e["red"] == "instagram_facebook":

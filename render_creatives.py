@@ -111,6 +111,42 @@ def elegible_para_respaldo(pub):
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; CalcoBot/1.0)"}
 
+# Palabras que no aportan al matcheo (ruido común en nombres de producto)
+_RUIDO = {"de", "del", "la", "el", "los", "las", "para", "con", "y", "en",
+          "personalizado", "personalizada", "personalizados", "personalizadas",
+          "impreso", "impresa", "impresos", "impresas", "a", "medida"}
+
+
+def _normalizar(texto):
+    """Minúsculas, sin tildes ni puntuación, sin palabras de relleno."""
+    t = texto.lower().strip()
+    for a, b in (("á", "a"), ("é", "e"), ("í", "i"), ("ó", "o"), ("ú", "u")):
+        t = t.replace(a, b)
+    t = re.sub(r"[^a-z0-9\s]", " ", t)
+    return [w for w in t.split() if w not in _RUIDO and len(w) >= 3]
+
+
+def _misma_palabra(a, b):
+    """Compara por prefijo en vez de intentar reglas de plural, que en
+    español fallan seguido (estuche/estuches, caja/cajas, rollo/rollos).
+    Dos palabras se consideran la misma si una empieza con la otra y
+    comparten al menos 4 caracteres: 'estuche' ≈ 'estuches',
+    'caja' ≈ 'cajas', pero 'caja' ≠ 'cuaderno'."""
+    if a == b:
+        return True
+    corta, larga = (a, b) if len(a) <= len(b) else (b, a)
+    return len(corta) >= 4 and larga.startswith(corta)
+
+
+def _puntaje_coincidencia(objeto_visual, nombre_producto):
+    """Cuántas palabras significativas comparten el objeto que describe el
+    post y el nombre del producto del catálogo. 0 = no tienen nada que ver."""
+    pa = _normalizar(objeto_visual)
+    pb = _normalizar(nombre_producto)
+    if not pa or not pb:
+        return 0
+    return sum(1 for x in pa if any(_misma_palabra(x, y) for y in pb))
+
 
 def _descargar_bytes(url):
     resp = requests.get(url, timeout=TIMEOUT_HTTP, headers=HEADERS)
@@ -131,14 +167,12 @@ def _slug_de_categoria(url):
     return url.rstrip("/").split("/")[-1]
 
 
-def _imagen_desde_store_api(url_categoria):
-    """Intento 1 (preferido): la API pública de WooCommerce Store API
-    devuelve productos reales de la categoría, cada uno con su propia
-    foto. Requiere que el sitio la tenga habilitada (viene activada por
-    defecto en WooCommerce moderno, pero puede estar desactivada)."""
-    dominio = "/".join(url_categoria.split("/")[:3])  # https://calco.uy
+def _listar_productos_store_api(url_categoria):
+    """Devuelve (lista_de_productos, error). Cada producto trae name e
+    images, que es lo que hace falta para matchear y para la foto."""
+    dominio = "/".join(url_categoria.split("/")[:3])
     slug = _slug_de_categoria(url_categoria)
-    endpoint = f"{dominio}/wp-json/wc/store/v1/products?category={slug}&per_page=10"
+    endpoint = f"{dominio}/wp-json/wc/store/v1/products?category={slug}&per_page=50"
 
     try:
         resp = requests.get(endpoint, timeout=TIMEOUT_HTTP, headers=HEADERS)
@@ -150,101 +184,58 @@ def _imagen_desde_store_api(url_categoria):
     if not isinstance(productos, list) or not productos:
         return None, "Store API respondió sin productos para esta categoría"
 
+    return productos, None
+
+
+def obtener_imagen_para_post(url_categoria, objeto_visual):
+    """REGLA CENTRAL: solo devuelve una foto si el nombre del producto en
+    el catálogo coincide con el objeto del que habla el post.
+
+    Si el post dice "caja troquelada" y en el catálogo hay una "Caja
+    display", coincide (comparten "caja") y se usa esa foto. Si en el
+    catálogo solo hay bolsas, NO coincide y no se devuelve nada — es
+    preferible no publicar a publicar una bolsa cuando el texto habla de
+    cajas.
+
+    Devuelve (bytes_imagen, nombre_producto, error)."""
+    if not objeto_visual:
+        return None, None, ("El post no declara qué objeto concreto muestra "
+                            "(campo 'objeto_visual' vacío). No se arriesga "
+                            "una foto que puede no corresponder.")
+
+    productos, error = _listar_productos_store_api(url_categoria)
+    if error:
+        return None, None, error
+
+    # Ranking por coincidencia de nombre
+    con_puntaje = []
     for p in productos:
+        nombre = p.get("name") or ""
         imagenes = p.get("images") or []
-        if imagenes and imagenes[0].get("src"):
-            url_imagen = imagenes[0]["src"]
-            try:
-                return _descargar_bytes(url_imagen), None
-            except Exception as e:
-                continue  # probar el siguiente producto de la lista
+        if not nombre or not imagenes or not imagenes[0].get("src"):
+            continue
+        puntaje = _puntaje_coincidencia(objeto_visual, nombre)
+        if puntaje > 0:
+            con_puntaje.append((puntaje, nombre, imagenes[0]["src"]))
 
-    return None, "Ningún producto de la categoría tenía foto en la Store API"
+    if not con_puntaje:
+        nombres = ", ".join(
+            (p.get("name") or "?") for p in productos[:8]
+        )
+        return None, None, (
+            f"Ningún producto del catálogo coincide con '{objeto_visual}'. "
+            f"Productos disponibles en la categoría: {nombres}. "
+            "No se genera imagen: publicar una foto que no corresponde al "
+            "texto es peor que no publicar."
+        )
 
-
-def _imagen_desde_ficha_individual(url_categoria):
-    """Intento 2 (respaldo): si la Store API no está disponible, se busca
-    en el HTML de la página de categoría un link a una ficha de producto
-    individual real (nunca se usa la imagen de la propia página de
-    categoría, que es genérica), y se saca el og:image de esa ficha."""
-    try:
-        resp = requests.get(url_categoria, timeout=TIMEOUT_HTTP, headers=HEADERS)
-        resp.raise_for_status()
-    except Exception as e:
-        return None, f"No se pudo abrir {url_categoria}: {e}"
-
-    # Patrón típico de permalink de producto individual en WooCommerce.
-    # Se descarta cualquier link que sea la propia página de categoría.
-    candidatos = re.findall(
-        r'href=["\']([^"\']*/producto/[^"\']+)["\']', resp.text, re.IGNORECASE
-    )
-    candidatos = [c for c in candidatos if c.rstrip("/") != url_categoria.rstrip("/")]
-
-    if not candidatos:
-        return None, ("No se encontró ningún link a una ficha de producto "
-                       "individual dentro de la página de categoría")
-
-    url_producto = urljoin(url_categoria, candidatos[0])
+    con_puntaje.sort(key=lambda x: -x[0])
+    _, nombre_elegido, url_imagen = con_puntaje[0]
 
     try:
-        resp_prod = requests.get(url_producto, timeout=TIMEOUT_HTTP, headers=HEADERS)
-        resp_prod.raise_for_status()
+        return _descargar_bytes(url_imagen), nombre_elegido, None
     except Exception as e:
-        return None, f"No se pudo abrir la ficha de producto {url_producto}: {e}"
-
-    match = re.search(
-        r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
-        resp_prod.text, re.IGNORECASE
-    ) or re.search(
-        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
-        resp_prod.text, re.IGNORECASE
-    )
-    if not match:
-        return None, f"No se encontró og:image en la ficha {url_producto}"
-
-    url_imagen = urljoin(url_producto, match.group(1))
-    try:
-        return _descargar_bytes(url_imagen), None
-    except Exception as e:
-        return None, f"No se pudo descargar la imagen {url_imagen}: {e}"
-
-
-def obtener_imagen_producto(url_configurada):
-    """Punto de entrada único. IMPORTANTE: nunca devuelve la imagen de una
-    página de categoría (sería el banner genérico del sitio, no una foto
-    de producto real) — siempre busca la foto de un producto específico,
-    por dos vías distintas, y si ninguna funciona, no devuelve nada en
-    vez de arriesgarse a mostrar algo genérico o inventado."""
-    if _es_pagina_de_categoria(url_configurada):
-        imagen, error = _imagen_desde_store_api(url_configurada)
-        if imagen:
-            return imagen, None
-        print(f"    (Store API falló: {error}. Probando respaldo...)")
-        return _imagen_desde_ficha_individual(url_configurada)
-
-    # Si la URL configurada ya es la ficha de un producto puntual (no una
-    # categoría), se puede usar directamente su og:image.
-    try:
-        resp = requests.get(url_configurada, timeout=TIMEOUT_HTTP, headers=HEADERS)
-        resp.raise_for_status()
-    except Exception as e:
-        return None, f"No se pudo abrir {url_configurada}: {e}"
-
-    match = re.search(
-        r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
-        resp.text, re.IGNORECASE
-    ) or re.search(
-        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
-        resp.text, re.IGNORECASE
-    )
-    if not match:
-        return None, f"No se encontró og:image en {url_configurada}"
-
-    url_imagen = urljoin(url_configurada, match.group(1))
-    try:
-        return _descargar_bytes(url_imagen), None
-    except Exception as e:
-        return None, f"No se pudo descargar la imagen {url_imagen}: {e}"
+        return None, None, f"No se pudo descargar la foto de '{nombre_elegido}': {e}"
 
 
 def armar_html_plantilla(imagen_data_url, nombre_empresa, sitio):
@@ -368,16 +359,22 @@ def main():
             continue
 
         url_producto = info_producto["url"]
-        print(f"  Buscando foto real en: {url_producto}")
+        objeto_visual = pub.get("objeto_visual", "")
 
-        imagen_bytes, error = obtener_imagen_producto(url_producto)
+        print(f"  El post habla de: '{objeto_visual or '(no declarado)'}'")
+        print(f"  Buscando en el catálogo: {url_producto}")
+
+        imagen_bytes, nombre_elegido, error = obtener_imagen_para_post(
+            url_producto, objeto_visual
+        )
         if error:
-            print(f"  {error}. Se salta esta publicación (Nicolás puede subir "
-                  "su propia foto cuando pueda).")
+            print(f"  NO SE GENERA — {error}")
             continue
 
+        print(f"  Coincidencia encontrada: «{nombre_elegido}»")
+
         if args.dry_run:
-            print("  [dry-run] Se generaría una imagen de respaldo acá.")
+            print("  [dry-run] Se generaría la imagen con esa foto.")
             continue
 
         import base64
@@ -395,7 +392,8 @@ def main():
         ruta_salida = carpeta_media / f"{pub_id}.jpg"
         renderizar(html, ruta_salida, navegador)
         generadas += 1
-        print(f"  Generada: {ruta_salida} (foto real de {url_producto}, con plantilla de marca)")
+        print(f"  Generada: {ruta_salida}")
+        print(f"    Foto real de «{nombre_elegido}» del catálogo de calco.uy")
 
     if navegador:
         navegador.close()
