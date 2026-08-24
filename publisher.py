@@ -87,6 +87,12 @@ RAW_BASE_URL_ENV = os.environ.get("RAW_BASE_URL")
 TIMEOUT_POLL_VIDEO_SEGUNDOS = 180  # cuánto esperar a que Meta procese un reel
 INTERVALO_POLL_SEGUNDOS = 10
 
+# Las imágenes se procesan mucho más rápido que los videos, pero no son
+# instantáneas: Meta tiene que descargarlas de la URL pública primero.
+# Sin esta espera aparece el error 9007 "Media ID is not available".
+TIMEOUT_POLL_IMAGEN_SEGUNDOS = 60
+INTERVALO_POLL_IMAGEN_SEGUNDOS = 3
+
 
 # ---------------------------------------------------------------------------
 # UTILIDADES
@@ -216,10 +222,14 @@ def publicar_instagram(url_medio, caption, es_reel):
 
     container_id = data["id"]
 
-    if es_reel:
-        ok, detalle = esperar_contenedor_listo(container_id)
-        if not ok:
-            return False, detalle
+    # Meta procesa el medio de forma asíncrona y no avisa cuándo terminó.
+    # Publicar antes de que esté listo devuelve el error 9007
+    # ("Media ID is not available"). Se espera SIEMPRE, no solo para
+    # reels: las imágenes también tardan, sobre todo si Meta tiene que
+    # descargarlas de una URL externa como raw.githubusercontent.com.
+    ok, detalle = esperar_contenedor_listo(container_id, es_reel)
+    if not ok:
+        return False, detalle
 
     resp2 = requests.post(
         f"{GRAPH_BASE}/{IG_BUSINESS_ID}/media_publish",
@@ -233,11 +243,18 @@ def publicar_instagram(url_medio, caption, es_reel):
     return True, data2["id"]
 
 
-def esperar_contenedor_listo(container_id):
-    """Los reels se procesan de forma asíncrona. Hay que esperar a que
-    status_code sea FINISHED antes de publicar, si no la publicación falla."""
+def esperar_contenedor_listo(container_id, es_reel=False):
+    """Meta procesa el medio de forma asíncrona. Hay que esperar a que
+    status_code sea FINISHED antes de publicar; si no, devuelve el error
+    9007 'Media ID is not available'.
+
+    Los videos tardan bastante más que las imágenes, así que el tiempo
+    máximo de espera se ajusta según el caso."""
+    timeout = TIMEOUT_POLL_VIDEO_SEGUNDOS if es_reel else TIMEOUT_POLL_IMAGEN_SEGUNDOS
+    intervalo = INTERVALO_POLL_SEGUNDOS if es_reel else INTERVALO_POLL_IMAGEN_SEGUNDOS
+
     transcurrido = 0
-    while transcurrido < TIMEOUT_POLL_VIDEO_SEGUNDOS:
+    while transcurrido < timeout:
         resp = requests.get(
             f"{GRAPH_BASE}/{container_id}",
             params={"fields": "status_code", "access_token": PAGE_ACCESS_TOKEN},
@@ -249,13 +266,14 @@ def esperar_contenedor_listo(container_id):
         if estado == "FINISHED":
             return True, "listo"
         if estado == "ERROR":
-            return False, f"Meta reportó error procesando el video: {data}"
+            return False, f"Meta reportó error procesando el medio: {data}"
 
-        time.sleep(INTERVALO_POLL_SEGUNDOS)
-        transcurrido += INTERVALO_POLL_SEGUNDOS
+        time.sleep(intervalo)
+        transcurrido += intervalo
 
+    tipo = "video" if es_reel else "imagen"
     return False, (
-        f"El video no terminó de procesarse en {TIMEOUT_POLL_VIDEO_SEGUNDOS}s. "
+        f"La {tipo} no terminó de procesarse en {timeout}s. "
         "Puede seguir procesando del lado de Meta; reintentar más tarde."
     )
 
@@ -289,6 +307,19 @@ def publicar_facebook(url_medio, caption, es_video_flag):
 
     data = resp.json()
     if "id" not in data and "post_id" not in data:
+        error = data.get("error", {})
+        mensaje = error.get("message", str(data))
+        # Caso conocido: la app no tiene habilitado pages_manage_posts.
+        # Se explica en claro para no perder tiempo diagnosticando.
+        if "pages_manage_posts" in mensaje:
+            return False, (
+                "falta el permiso 'pages_manage_posts' en la app de Meta. "
+                "Instagram puede publicar igual; Facebook queda manual hasta "
+                "habilitarlo. Para resolverlo: en developers.facebook.com → la "
+                "app → 'Añadir casos de uso' → agregar el caso de uso de "
+                "administración de contenido de Facebook (Páginas), y volver a "
+                "generar el token incluyendo ese permiso."
+            )
         return False, f"Error de Facebook: {data}"
     return True, data.get("post_id", data.get("id"))
 
