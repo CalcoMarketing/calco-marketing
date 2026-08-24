@@ -10,17 +10,13 @@
 
 ### 📅 Miércoles 2 de septiembre · producto
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Una caja de delivery autoarmable, impresa con el logo de un local de comida, abierta sobre una mesa de trabajo mostrando el troquel y los dobleces.
+**Imagen a conseguir:** Foto de una caja de delivery autoarmable desplegada y otra armada al lado, sobre una mesa de taller, con el troquel de corte visible de fondo.
 
-> Las cajas de delivery autoarmables no necesitan cinta ni pegamento.
+> Las cajas de delivery autoarmables se guardan planas y se arman en segundos.
 >
-> En Calco Industria Gráfica las desarrollamos a medida: elegís el tamaño, el papel y la impresión. Se pliegan y se guardan planas, ocupan poco lugar en el depósito y se arman en segundos.
+> En Calco Industria Gráfica las desarrollamos a medida: el troquel corta, pliega y deja la caja lista para usar. Sin cintas, sin pegamento, sin pasos de más.
 >
-> La maquinaria de troquelado propio permite cortes precisos, con el doblez exacto para que cada unidad cierre igual.
->
-> ¿Las probamos con tu producto?
->
-> Presupuestá en calco.uy
+> El packaging no es un trámite al final del proceso. Es la primera impresión que tu cliente tiene de tu producto.
 
 `#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #PackagingUruguay #Estucheria #Canelones #CiudadDeLaCosta #Troquelado`
 
@@ -28,77 +24,77 @@
 
 ### 📅 Viernes 4 de septiembre · produccion
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Primer plano de una máquina de troquelado en movimiento, con una lámina de cartón cortándose bajo presión.
+**Imagen a conseguir:** Video corto en primer plano de la máquina troqueladora presionando un pliego de cartón, con el troquel metálico bajando y el corte apareciendo en la lámina.
 
-> Cada corte, cada doblez y cada detalle de la estuchería se define en la máquina.
+> El troquelado propio es una de las partes más visibles de nuestro trabajo.
 >
-> En Calco Industria Gráfica tenemos troquelado propio y un departamento de desarrollo a medida. Eso significa que no dependemos de terceros para ajustar una pieza: lo resolvemos en casa.
+> La máquina corta el cartón con una presión exacta: ni de más, ni de menos. Cada pliego sale igual al anterior, con el corte limpio y la marca del pliegue en el lugar justo.
 >
-> El plano se prueba, se ajusta y se corrige antes de la producción final. El resultado: una caja que cierra bien, que se pliega bien y que llega lista.
->
-> ¿Querés ver el proceso en persona? Escribinos por WhatsApp al 093944783.
+> Esa precisión es la diferencia entre una caja que se arma sola y una que hay que forzar. En Calco Industria Gráfica el desarrollo a medida empieza acá, en la máquina.
 
 `#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #PackagingUruguay #Estucheria #Canelones #CiudadDeLaCosta #Troquelado`
 
 ---
 
-### 📅 Lunes 7 de septiembre · vertical · alimentos
+### 📅 Lunes 7 de septiembre · educativo
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Rollo de etiquetas impresas para una botella de cerveza artesanal, mostrando el paso y la calidad de impresión, apoyado sobre una mesa junto a una botella.
+**Imagen a conseguir:** Foto de una bobina de etiquetas colocada en una etiquetadora automática, con el detalle del paso y el mandril visibles.
 
-> Una cervecería artesanal, una bodega o una conserva compiten en la góndola contra decenas de marcas. La etiqueta es lo primero que se ve y lo que explica el producto.
+> Elegir entre etiquetas en rollo o planas no es estético, es logístico.
 >
-> En Calco Industria Gráfica hacemos etiquetas en rollo y planas, en materiales compatibles con el contacto con alimentos. Ajustamos el paso, el sentido de salida y el diámetro del mandril para que funcionen en tu línea automática o manual.
+> Las etiquetas en rollo van en bobina y se aplican con etiquetadora automática. Las planas se despachan apiladas y se colocan a mano.
 >
-> ¿Tenés un producto que necesita su etiqueta?
+> En Calco Industria Gráfica fabricamos las dos. Las de rollo se hacen contemplando paso, sentido de salida y diámetro del mandril, para que el cambio de bobina no frene tu línea de producción.
 >
-> Contanos qué necesitás en los comentarios.
+> Si tu etiqueta no entra en tu máquina, todo el resto no importa.
+
+`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #EtiquetasUruguay #EtiquetasEnRollo #Canelones #CiudadDeLaCosta #PackagingUruguay`
+
+---
+
+### 📅 Miércoles 9 de septiembre · vertical · alimentos
+**Formato:** imagen · **Hora:** 09:30
+**Imagen a conseguir:** Foto de una botella de salsa artesanal con etiqueta, en una heladera abierta, con gotas de condensación visibles sobre el vidrio.
+
+> Una salsa artesanal pasa por frío, humedad y fricción antes de llegar a la mesa.
+>
+> Por eso en Calco Industria Gráfica trabajamos con materiales compatibles con alimentos, pensados para aguantar el uso real en góndola y en uso doméstico.
+>
+> Etiquetas para cervecerías, bodegas, conservas y salsas, en rollo o planas, para aplicación manual o automática.
+>
+> La etiqueta es parte del producto. Si no aguanta, el producto pierde.
 
 `#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #EtiquetasUruguay #EtiquetasEnRollo #AlimentosYBebidas #Cerveceria #Canelones`
 
 ---
 
-### 📅 Miércoles 9 de septiembre · educativo
-**Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Pila de muestras de papel de distintos gramajes con un calibre metálico de espesores sobre una mesa de trabajo, iluminadas con luz natural.
-
-> Cuando pedís un presupuesto de impresión, una de las primeras preguntas es: ¿qué gramaje usamos?
->
-> El gramaje es el peso del papel por metro cuadrado. Un papel de 90 g/m² es liviano, típico para folletos de uso diario. Uno de 300 g/m² es rígido, ideal para tapas de libros o tarjetas.
->
-> Elegir el gramaje correcto define la resistencia, la textura y el costo. En Calco Industria Gráfica te asesoramos según el uso que le vayas a dar: no hace falta pagar de más por un papel más pesado del necesario.
-
-`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #PapeleriaEmpresarial #IdentidadCorporativa #Canelones #CiudadDeLaCosta #PackagingUruguay`
-
----
-
 ### 📅 Viernes 11 de septiembre · credibilidad
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Fachada del taller de Calco Industria Gráfica con el cartel de la empresa visible, o una vista general del interior con las máquinas de impresión.
+**Imagen a conseguir:** Foto de una pila de libros recién impresos en el taller, con uno abierto mostrando el lomo cosido, y de fondo la zona de expedición.
 
-> Calco Industria Gráfica está en actividad desde 2005. Más de dos décadas imprimiendo packaging, etiquetas, libros y papelería para clientes de todo Uruguay.
+> Desde 2005, Calco Industria Gráfica imprime en San José de Carrasco.
 >
-> En todo ese tiempo aprendimos a resolver trabajos con plazos ajustados, a desarrollar piezas a medida y a cuidar cada detalle del proceso, desde el diseño hasta la entrega a domicilio.
+> Más de 20 años después, seguimos siendo una imprenta certificada. No es un eslogan, es un estado: procesos controlados, materiales verificados y un equipo que sabe lo que hace.
 >
-> Además, somos una imprenta certificada. Un respaldo que se nota en la forma de trabajar.
+> También hacemos el depósito legal gratuito en la Biblioteca Nacional: por cada libro que imprimimos, entregamos los 4 ejemplares que exige la normativa. Sin costo extra para vos.
 >
-> ¿Querés sumarte a los que ya confían en nosotros? Presupuestá en calco.uy
+> El resultado de 20 años es simple: sabés qué vas a recibir antes de pedirlo.
 
-`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #Canelones #CiudadDeLaCosta #PackagingUruguay #Estucheria #Troquelado`
+`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #Libros #Editorial #Canelones #CiudadDeLaCosta #PackagingUruguay`
 
 ---
 
 ### 📅 Lunes 14 de septiembre · servicio
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Impresora digital en funcionamiento con hojas saliendo rápidamente, con una bandeja de recogida llena de piezas impresas, tomada con poca profundidad de campo.
+**Imagen a conseguir:** Foto de un folleto apilado en una mesa de oficina junto a un reloj de pared, en un ambiente de trabajo, con alguien revisando el material al fondo.
 
-> Un evento, una feria o un lanzamiento no esperan. Cuando el plazo es corto, la impresión no puede fallar.
+> Pasa seguido: el evento tiene fecha fija y nadie imprimió la folletería.
 >
-> En Calco Industria Gráfica tenemos una línea específica de impresos urgentes, pensada para trabajos con fechas confirmadas. La coordinamos para que la producción se haga en el tiempo justo, sin improvisar.
+> En Calco Industria Gráfica tenemos una línea específica de impresos urgentes. Ahí entran los trabajos con plazo ajustado, los que no pueden esperar al ciclo normal de producción.
 >
-> Avisanos qué necesitás y cuándo tiene que estar.
+> Se puede pedir el servicio completo: diseño, producción y entrega a domicilio.
 >
-> Escribinos por WhatsApp al 093944783
+> La urgencia no tiene por qué significar improvisación.
 
 `#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #ImpresosUrgentes #ImpresionRapida #Canelones #CiudadDeLaCosta #PackagingUruguay`
 
@@ -106,11 +102,13 @@
 
 ### 📅 Miércoles 16 de septiembre · producto
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Foto en primer plano de una caja de cartón cerrada por pestaña troquelada, sin pegamento, mostrando la unión encastrada de cerca.
+**Imagen a conseguir:** Foto de una caja de delivery autoarmable ya montada, sostenida con una mano, mostrando el cierre sin cinta, con el logo de una marca ficticia impreso.
 
-> Hay dos formas de cerrar una caja: con pegamento o con troquel de unión. La segunda no se ve, pero se nota apenas la abrís. El troquel corta la pestaña en el ángulo justo para que encastre sin adhesivo y aguante el uso repetido.
+> Hay packaging que se cierra en dos pasos, sin pegamento ni cinta. Son cajas autoarmables pensadas para delivery: el cliente las abre, las arma y las usa. Vos no perdés tiempo en el proceso.
 >
-> En Calco Industria Gráfica desarrollamos ese tipo de detalles a medida, con troquelado propio. No hace falta un volumen enorme para tener una caja bien pensada.
+> En Calco Industria Gráfica las desarrollamos a medida, con el troquelado propio. Eso quiere decir que el corte y el pliegue se calculan para que la caja cierre bien, todas las veces.
+>
+> La caja es lo primero que toca el que recibe el pedido. Si esa experiencia es ordenada, el resto del trabajo ya arranca con ventaja.
 >
 > Contanos qué necesitás en los comentarios.
 
@@ -120,53 +118,61 @@
 
 ### 📅 Viernes 18 de septiembre · produccion
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Foto en el taller del troquel de madera con cuchillas metálicas, visto desde arriba, con luz lateral que marque las cuchillas sobre la madera.
+**Imagen a conseguir:** Primer plano de un estuche con barniz sectorizado sobre un logo, iluminado lateralmente para que se vea el contraste entre el área brillante y el fondo mate.
 
-> Este es el troquel. Una plancha con cuchillas dobladas a mano, clavadas sobre madera. Cuando baja sobre el papel, corta la forma de una sola pasada.
+> Hay trabajos donde lo importante no es el color. Es lo que pasa después de imprimir.
 >
-> Cada curva, cada ángulo, cada pestaña de tu caja o estuche depende de cómo se dobló ese filo. Por eso el ajuste fino lleva tiempo y se hace a ojo, con paciencia.
+> El barniz sectorizado se aplica solo en una parte del papel. Puede marcar un logo, un borde o una franja. El resto queda mate. Ese contraste es una terminación que se nota al tacto y cambia la percepción del impreso.
 >
-> En Calco Industria Gráfica el troquelado es propio. No lo tercerizamos, lo controlamos de punta a punta.
+> Para hacerlo hace falta una máquina que aplique el barniz con registro, y alguien que sepa calibrarla. En Calco Industria Gráfica trabajamos con ese tipo de terminaciones de forma habitual.
+>
+> El detalle está en la diferencia entre lo que se ve y lo que se toca.
 
 `#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #PackagingUruguay #Estucheria #Canelones #CiudadDeLaCosta #Troquelado`
 
 ---
 
-### 📅 Lunes 21 de septiembre · vertical · farmacia
+### 📅 Lunes 21 de septiembre · educativo
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Fotografía de un estuche de cartón rígido cerrado, con acabado en relieve visible, sobre fondo neutro con sombra suave.
+**Imagen a conseguir:** Foto de un libro abierto sobre una mesa de trabajo, mostrando el tipo de papel y la mancha de texto, con luz natural.
 
-> Un estuche de farmacia tiene que abrirse limpio, cerrar justo y proteger el contenido. Si la tapa baila o el corte no coincide, el producto pierde confianza antes de salir de la góndola.
+> Elegir el papel de un libro no es buscar el más blanco ni el más barato. Se elige según el tipo de lectura.
 >
-> Trabajamos estuches de alta precisión para farmacia y cosmética, con terminaciones como relieve, barniz sectorizado y laminados. El troquelado propio permite ajustar cada corte al milímetro, sin depender de un tercero.
+> Un libro de fotografías pide un papel con cuerpo y poco brillo, para que la tinta no se marque en la página siguiente. Una novela de texto puro admite un papel más liviano, que abarata el costo final y no incomoda al leer.
 >
-> Presupuestá en calco.uy.
+> En Calco Industria Gráfica asesoramos en la elección del papel según el contenido, la encuadernación y el presupuesto. El depósito legal en la Biblioteca Nacional lo gestionamos nosotros: entregamos los ejemplares por vos, sin costo extra.
+>
+> Presupuestá en calco.uy (link en bio).
 
-`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #PackagingUruguay #Estucheria #Cosmetica #Farmacia #Canelones`
+`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #Libros #Editorial #Canelones #CiudadDeLaCosta #PackagingUruguay`
 
 ---
 
-### 📅 Miércoles 23 de septiembre · educativo
+### 📅 Miércoles 23 de septiembre · vertical · farmacia
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Foto macro de la textura de una hoja de papel con la mano sosteniéndola contra una regla que muestra la escala de gramaje.
+**Imagen a conseguir:** Macro de un prospecto farmacéutico perfectamente plegado, mostrando los dobleces alineados y el texto legible, sobre un fondo neutro.
 
-> El gramaje del papel es el peso de un metro cuadrado de esa hoja. Se mide en gramos: 90 g, 150 g, 350 g. No es lo mismo que el calibre, que se mide en micras, porque dos papeles de igual gramaje pueden tener distinto espesor según su composición y prensado.
+> Un prospecto farmacéutico tiene que plegarse exacto, cada vez. Si el corte queda corrido, el texto se tapa y el producto no se puede usar con seguridad.
 >
-> Cuando elegís un papel para una tarjeta, una etiqueta o un estuche, el gramaje define parte de la rigidez y de la textura. No es un dato menor, es la base de cómo se va a sentir tu impreso en la mano.
+> En Calco Industria Gráfica hacemos prospectos con plegado de precisión, impresos en bobina y cortados con registro constante. También trabajamos estuches para farmacia y cosmética, con terminaciones como relieve y laminado.
+>
+> Para el envase farmacéutico, el detalle no es decorativo: es funcional. El prospecto plegado y el estuche cerrado tienen que cumplir su trabajo a la primera.
 >
 > Escribinos por WhatsApp al 093944783.
 
-`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #PapeleriaEmpresarial #IdentidadCorporativa #Canelones #CiudadDeLaCosta #PackagingUruguay`
+`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #PapeleriaEmpresarial #IdentidadCorporativa #Cosmetica #Farmacia #Canelones`
 
 ---
 
 ### 📅 Viernes 25 de septiembre · producto
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Foto de un rollo de etiquetas sobre una mesa de taller con una etiqueta despegada en primer plano, mostrando el material y el adhesivo.
+**Imagen a conseguir:** Foto de un rollo de etiquetas impresas en bobina, con el material visible y el borde del rollo prolijo, sobre una mesa de taller.
 
-> Si etiquetás a mano, la etiqueta tiene que salir del rollo sin enroscarse y pegarse pareja en el frasco. Si usás etiquetadora automática, el paso, el sentido de salida y el diámetro del mandril tienen que coincidir con tu máquina.
+> Las etiquetas en rollo no se pegan solas: se pegan con máquina. Y esa máquina necesita una etiqueta que venga bien preparada.
 >
-> En Calco Industria Gráfica contemplamos esos tres datos al diseñar tus etiquetas en rollo o planas. Trabajamos con botellas, latas y tarros, en materiales para aplicación manual o automática.
+> Si el material no es el correcto, la etiqueta se despega o se rompe. Si el paso o el diámetro del mandril no se calcularon, la máquina se traba y la producción frena.
+>
+> Por eso en Calco Industria Gráfica preguntamos antes de imprimir: cómo se aplica, en qué material, con qué máquina. Con esos datos hacemos la etiqueta que entra en tu línea de producción sin frenarla.
 >
 > Contanos qué necesitás en los comentarios.
 
@@ -176,29 +182,31 @@
 
 ### 📅 Lunes 28 de septiembre · produccion
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Foto de un operario en el taller con guantes blancos revisando una pila de impresos recién salidos de la máquina, con foco en el trabajo terminado.
+**Imagen a conseguir:** Primer plano de una máquina troqueladora en movimiento, con el troquel de acero bajando sobre una lámina de cartón, y viruta visible al costado.
 
-> Antes de que un impreso salga de Calco Industria Gráfica, alguien lo revisa con ojos de taller. No es un control automático: es una persona que mira el registro, el color y el corte, hoja por hoja.
+> El troquel corta el papel con una presión exacta. Si es poca, no corta todo el espesor y el material queda unido. Si es mucha, estropea el corte y la pieza se nota.
 >
-> Esa revisión es la que separa una imprenta que entrega lo que promete de una que manda el trabajo y a otra cosa. Llevamos más de 20 años haciendo ese control, y no lo vamos a dejar de hacer.
+> En Calco Industria Gráfica el troquelado lo hacemos con maquinaria propia. Por eso podemos ajustar la presión para cada trabajo: cada material tiene su punto, y encontrarlo es parte del oficio.
+>
+> Un troquel bien calibrado se nota en la pieza final: los bordes limpios, sin rebaba, sin marcas. Ese es el estándar que aplicamos en cada corrida, sea una caja o un packaging de alta precisión.
 
-`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #PapeleriaEmpresarial #IdentidadCorporativa #Canelones #CiudadDeLaCosta #PackagingUruguay`
+`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #PackagingUruguay #Estucheria #Canelones #CiudadDeLaCosta #Troquelado`
 
 ---
 
-### 📅 Miércoles 30 de septiembre · vertical · gastronomia
+### 📅 Miércoles 30 de septiembre · educativo
 **Formato:** imagen · **Hora:** 09:30
-**Imagen a conseguir:** Video corto en el taller: manos que despliegan una caja de delivery autoarmable personalizada con un logo gastronómico, se cierra la solapa y se muestra la impresión nítida en el exterior.
+**Imagen a conseguir:** Primer plano de la mano de un operario sosteniendo dos muestras de papel de distinto gramaje frente a una máquina de impresión en el taller.
 
-> Cuando el delivery llega, la primera impresión no es la comida: es la caja.
+> En un impreso, el papel es la base de todo.
 >
-> Para gastronomía trabajamos cajas de delivery autoarmables, con tu marca y las medidas que necesites. Se arman en segundos, resisten el traslado y dejan una imagen prolija antes de abrir el primer bocado.
+> El gramaje define la rigidez, la textura y la opacidad. No es lo mismo una etiqueta que tiene que doblarse que un estuche que tiene que mantener la forma.
 >
-> Usamos materiales aptos para contacto con alimentos. La caja es el único contacto con tu marca antes de que el cliente pruebe lo que cocinás.
+> Elegir el papel correcto evita problemas en producción y en uso. En Calco Industria Gráfica te asesoramos para que el material acompañe al diseño.
 >
-> Presupuestá en calco.uy (link en bio)
+> Presupuestá tu trabajo en calco.uy (link en bio).
 
-`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #PackagingUruguay #Estucheria #Gastronomia #Delivery #Canelones`
+`#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #PapeleriaEmpresarial #IdentidadCorporativa #Canelones #CiudadDeLaCosta #PackagingUruguay`
 
 ---
 
@@ -207,130 +215,124 @@
 ### 📅 Martes 1 de septiembre
 **Hora:** 09:30
 
-> La etiqueta en bobina no termina en el diseño. La aplicación también se planea.
+> El troquelado no es solo cortar cartón. Es una operación de precisión que define si un estuche cierra bien, si una caja soporta el peso del producto y si una etiqueta sale limpia de la matriz.
 >
-> Para imprentas, un dato técnico concreto vale más que una promesa. Cuando una etiqueta se va a colocar con una etiquetadora automática, hay tres variables que definen si el proceso funciona o se traba en producción:
+> En Calco Industria Gráfica trabajamos con troquelado propio. Eso significa que el desarrollo a medida de tu packaging no depende de un tercero: lo controlamos de principio a fin, desde el diseño del molde hasta la última unidad producida.
 >
-> El paso. Es la distancia entre una etiqueta y la siguiente en el rollo. Si no coincide con el cabezal de la máquina, la etiqueta no se corta donde tiene que cortarse.
+> Cuando un formato estándar no te sirve, el troquelado propio permite ajustar cada ángulo, cada solapa y cada detalle para que el envase cumpla su función real: contener, proteger y presentar.
 >
-> El sentido de salida. La etiqueta puede salir por arriba o por abajo. Eso depende del sentido en que se enrolla la bobina.
->
-> El diámetro del mandril. El núcleo sobre el que va enrollado el rollo tiene que encajar en la máquina.
->
-> Cada variable se define en la etapa de producción, antes de imprimir. Son datos que se cargan en la orden de trabajo y que hacen que la etiqueta llegue lista para correr en tu línea.
+> Si tu producto necesita un packaging con una medida o una forma específica, ese desarrollo es posible y se hace en el taller.
 
 ---
 
 ### 📅 Jueves 3 de septiembre
 **Hora:** 09:30
 
-> Hay un dato que mide la seriedad de una imprenta y no aparece en el producto terminado: la trazabilidad del pedido.
+> Veinte años de oficio gráfico no se notan en un cartel. Se notan en lo que no falla.
 >
-> En Calco Industria Gráfica trabajamos con un proceso que arranca en la recepción de tu archivo y termina con la entrega a domicilio. En el medio hay una orden de producción que define cada paso: el material, la medida final, el acabado y la cantidad exacta.
+> En Calco Industria Gráfica estamos en actividad desde 2005. Eso implica más de dos décadas produciendo packaging, etiquetas, papelería y material editorial para empresas de todo Uruguay.
 >
-> Esa hoja de ruta es la que permite responder con certeza, no con estimaciones. Sabemos en qué etapa está cada trabajo y cuándo va a salir a reparto.
+> La certificación de nuestra imprenta es un dato, no un adorno. Implica que los procesos se auditan y que el resultado es consistente entre una orden y la siguiente.
 >
-> La imprenta está certificada, y esa certificación se sostiene justamente en esto: en que cada pedido se controle de la misma manera, sin excepciones.
+> Cuando encargás un trabajo, la tranquilidad no viene de una promesa, viene de saber que del otro lado hay un equipo que ya resolvió los problemas que recién aparecen en el camino.
 >
-> Trabajamos con cualquier cantidad, porque el proceso se mantiene igual, se impriman diez unidades o diez mil.
+> Eso es lo que ofrecemos. Lo demás se ve en el producto terminado.
 
 ---
 
 ### 📅 Martes 8 de septiembre
 **Hora:** 09:30
 
-> Cuando una editorial o un autor imprime un libro en Uruguay, hay un paso que suele olvidarse hasta último momento: el depósito legal.
+> El depósito legal es un paso que muchos autores desconocen. Cuando publicás un libro en Uruguay, la normativa exige entregar ejemplares a la Biblioteca Nacional. En Calco Industria Gráfica lo hacemos por vos, sin costo adicional: gestionamos los 4 ejemplares requeridos como parte del servicio editorial.
 >
-> La normativa exige entregar cuatro ejemplares de cada libro a la Biblioteca Nacional. Ese trámite es obligatorio, pero no tiene costo.
+> Eso te quita un trámite administrativo y te asegura que tu libro cumpla con la obligación sin que tengas que investigar cómo hacerlo.
 >
-> En Calco Industria Gráfica lo incluimos en el proceso editorial. Cuando imprimís un libro con nosotros, los cuatro ejemplares se retiran de la tirada y se gestiona el envío a la Biblioteca Nacional. No cobramos adicional por ese servicio.
+> El depósito aplica a libros, revistas y publicaciones periódicas. Si estás por editar, es un punto a tener en cuenta antes de la impresión.
 >
-> Para una editorial, ese trámite es parte de la publicación. Hacerlo de forma ordenada, junto con la producción, evita que quede pendiente y que haya que rastrear ejemplares después.
->
-> Si estás planificando una tirada, el depósito legal no se resuelve solo. Se resuelve con una imprenta que lo tenga contemplado desde el inicio.
+> Trabajamos con editoriales y autores particulares, en tirajes chicos o grandes, con distintos papeles y encuadernaciones.
 
 ---
 
 ### 📅 Jueves 10 de septiembre
 **Hora:** 09:30
 
-> La certificación de una imprenta no es un diploma colgado en la pared. Es un sistema de control que se aplica en cada pedido.
+> ¿Sabés qué diferencia una imprenta certificada? No es un sello en la pared. Es un proceso de trabajo con controles documentados que aseguran que el producto final cumpla con los requisitos establecidos.
 >
-> En Calco Industria Gráfica, la certificación implica que los procesos están documentados y que se cumplen de forma consistente. No se depende de la memoria de nadie: cada trabajo tiene una orden de producción, cada etapa se verifica y cada entrega se registra.
+> En Calco Industria Gráfica estamos certificados. Eso implica que la producción se registra, que las terminaciones se revisan y que la trazabilidad existe de principio a fin.
 >
-> A la hora de elegir proveedor, ese sistema se nota en cosas concretas: los plazos se cumplen porque están planificados, los materiales son los que se pidieron porque están especificados por escrito, y el producto final es predecible.
+> Para tu empresa, eso se traduce en algo concreto: cuando pedís una reposición, el resultado es consistente. Cuando necesitás un dato técnico, lo podés rastrear.
 >
-> Estamos en actividad desde 2005. Más de veinte años en una industria donde la confianza se construye con cada pedido entregado.
+> Trabajamos desde 2005 con empresas de distintos rubros, y la certificación no es un adorno: es una herramienta de gestión que aplicamos todos los días.
 >
-> Cuando un cliente repite, no es por el trato. Es porque el sistema funciona.
+> Si valorás la consistencia y el control, es un dato a considerar.
 
 ---
 
 ### 📅 Martes 15 de septiembre
 **Hora:** 09:30
 
-> El troquelado a medida no es un lujo. Es una necesidad cuando el packaging tiene que cumplir una función específica.
+> El papel y el cartón no son neutros. Cuando un envase entra en contacto con alimentos, el material tiene que ser compatible con ese uso. No es lo mismo imprimir una etiqueta para un tarro de conservas que para una caja de zapatos.
 >
-> En Calco Industria Gráfica tenemos troquelado propio. Eso significa que no dependemos de un proveedor externo para hacer una matriz con la forma exacta que necesita tu producto.
+> En Calco Industria Gráfica trabajamos con materiales aptos para contacto con alimentos. Eso no es una preferencia: es un requisito técnico del rubro.
 >
-> El troquelado propio permite dos cosas. Primero, probar: si un diseño no cierra bien o no se pliega como esperabas, se corrige rápido, sin esperar a que un tercero devuelva una matriz. Segundo, producir: cuando la forma está aprobada, se reproduce de forma pareja en toda la tirada.
+> Si tu producto es una salsa, un frasco de miel o una bebida, la etiqueta no puede transferir sustancias ni alterar el contenido. Por eso elegimos sustratos que cumplen esa función.
 >
-> Un caso concreto: una caja de delivery autoarmable tiene que montarse en segundos. La forma del corte y los dobleces tienen que ser exactos, o el proceso de armado se traba. El troquel propio es lo que garantiza que cada caja quede igual a la anterior.
+> Más de 20 años de experiencia en el rubro alimenticio nos permiten asesorarte sobre qué material conviene para cada caso.
 >
-> Para tu empresa, eso se traduce en un packaging que funciona en la práctica, no solo en la pantalla.
+> La etiqueta es parte del envase. Y el envase es parte del producto.
 
 ---
 
 ### 📅 Jueves 17 de septiembre
 **Hora:** 09:30
 
-> Los plazos de entrega no se prometen. Se planifican.
+> La entrega a domicilio no es un extra menor. Cuando coordinás un lanzamiento o una reposición, el tiempo de traslado cuenta como parte de la producción.
 >
-> En Calco Industria Gráfica, cada pedido entra a un circuito de producción que tiene una fecha de entrega asignada. Esa fecha se define al momento de la confirmación del trabajo, con los tiempos reales de cada etapa, no con una estimación optimista.
+> En Calco Industria Gráfica el proceso es completo: diseño, producción y entrega. Eso significa que no tenés que buscar un flete por separado ni coordinar con un tercero que desconoce las características del trabajo.
 >
-> Esa planificación es la que hace posible tener una línea de impresos urgentes. Cuando un trabajo tiene una fecha fija, entra a un circuito específico que prioriza su paso por producción. No se salta ningún control, pero se organiza para que el tiempo se use al máximo.
+> El material llega armado y en condiciones, porque quien lo transporta sabe cómo va manipulado. Ese control sobre la cadena completa evita sorpresas en destino.
 >
-> Es una diferencia de proceso, no de actitud. La urgencia se resuelve con organización, no con apuro.
+> Trabajamos desde 2005 para empresas de todo Uruguay. La logística es parte de la solución, y la asumimos como tal.
 >
-> Llevamos más de veinte años en actividad. Sabemos que un plazo es un compromiso técnico, y lo tratamos como tal.
+> Si tu empresa valora recibir el pedido listo para usar, es un factor a tener en cuenta.
 
 ---
 
 ### 📅 Martes 22 de septiembre
 **Hora:** 09:30
 
-> Cada papel tiene un comportamiento distinto ante la tinta, el plegado y el troquelado. Un papel con mucha absorción puede generar colores apagados; uno demasiado satinado, problemas de secado en impresiones de alta cobertura.
+> Cada papel tiene un comportamiento distinto en la máquina y en la mano. Gramaje, rigidez, opacidad, textura. No existe uno perfecto, existe el adecuado para cada trabajo.
 >
-> A la hora de elegir, hay tres datos que importan más que el gramaje: la opacidad, el calibre y el tipo de acabado. La opacidad evita que se transparente el texto de la página siguiente. El calibre define la rigidez de una tapa o de una tarjeta. El acabado, cómo se ve y cómo se siente el impreso al tacto.
+> Un libro de poesía pide una hoja que no transpire. Un catálogo de productos necesita que la tinta no se vea por detrás. Una tarjeta tiene que tener cuerpo al tacto.
 >
-> Para un libro o un catálogo, la decisión no se toma solo por el precio del kilo de papel: se toma por cómo se pliega, cómo se cose y cómo envejece en la estantería. Ese criterio se aprende con años de producción.
+> Cuando definimos un papel, pensamos en cómo se va a imprimir, cómo se va a plegar y cómo se va a encuadernar. El resultado final depende de esa decisión tanto como de la tinta.
 >
-> En Calco Industria Gráfica trabajamos con distintos papeles, formatos y tipos de encuadernación. Si estás por imprimir, el papel se elige antes que la tapa.
+> Si vas a publicar un libro o una revista, conviene que esa elección la hagamos juntos. Calco Industria Gráfica. Imprenta certificada en actividad desde 2005.
 
 ---
 
 ### 📅 Jueves 24 de septiembre
 **Hora:** 09:30
 
-> Una imprenta no se construye con una máquina nueva. Se construye con pedidos que salen bien, errores que se corrigen y clientes que vuelven.
+> La certificación no es un cartel en la pared. Implica que un auditor externo revisa nuestros procesos, el estado de las máquinas y la forma en que trabajamos.
 >
-> Desde 2005, Calco Industria Gráfica recorre ese camino en San José de Carrasco. Dos décadas que se ven en los detalles de producción: en el ajuste fino de una troqueladora, en la elección del material adecuado para cada trabajo, en la coordinación de una entrega a tiempo.
+> Eso se traduce en algo concreto: cada pedido que sale de Calco Industria Gráfica pasa por controles definidos. Sabés qué recibís, cómo lo recibís y cuándo lo recibís. No depende de la memoria de nadie, depende de un procedimiento.
 >
-> La certificación de la empresa no es un trámite colgado en la pared: es un respaldo que se comprueba en cada proceso, desde la recepción del archivo hasta el despacho.
+> Trabajamos así desde antes de tener la certificación. La certificación solo puso por escrito lo que ya hacíamos todos los días.
 >
-> Más de veinte años no se improvisan. Se trabajan día a día, pedido a pedido.
+> Más de veinte años de oficio gráfico y un proceso que se audita de afuera. Calco Industria Gráfica.
 
 ---
 
 ### 📅 Martes 29 de septiembre
 **Hora:** 09:30
 
-> No todo material de impresión sirve para estar en contacto con comida. Una etiqueta que va pegada a una botella de salsa o a un envase de yogurt necesita cumplir requisitos específicos de migración y composición.
+> Cuando una etiqueta se aplica con una etiquetadora automática, no hay margen para que se corra, se arrugue o se corte mal. Una bobina que falla frena una línea de producción entera.
 >
-> En la práctica, eso se traduce en usar tintas y sustratos pensados para ese uso. No es lo mismo una etiqueta para una góndola que una etiqueta que acompaña el contenido durante meses.
+> Por eso, en Calco Industria Gráfica fabricamos etiquetas en rollo contemplando tres factores técnicos: el paso, que es la distancia entre etiqueta y etiqueta; el sentido de salida, que define cómo sale la etiqueta de la máquina; y el diámetro del mandril, que tiene que coincidir exactamente con el del equipo.
 >
-> Para cervecerías, bodegas, conservas y salsas, la elección del material no es un detalle decorativo: es un requisito técnico. El material tiene que resistir la humedad, la exposición al contenido y el proceso de llenado.
+> Cada uno de esos datos se ajusta al equipo específico que usa tu empresa. No se trabaja con medidas estándar porque no existen dos líneas de envasado iguales.
 >
-> En Calco Industria Gráfica trabajamos con materiales compatibles con uso en alimentos. Si tu producto llega a una góndola, la etiqueta tiene que estar a la altura de esa exigencia.
+> Si aplicás etiquetas con máquinas automáticas, sabé que esos detalles son la diferencia entre una operación fluida y un dolor de cabeza. Calco Industria Gráfica. Imprenta certificada.
 
 ---
