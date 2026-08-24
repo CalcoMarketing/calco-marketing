@@ -1,0 +1,76 @@
+name: Publicar contenido diario
+
+# Corre todos los días a las 12:15 UTC (09:15 en Montevideo), 15 minutos
+# antes de la hora de publicación configurada en marca/sistema_de_marca.json
+# (cadencia.hora_publicacion = 09:30). Solo publica si hay algo programado
+# para el día de hoy en el calendario del mes — si no hay nada, no hace nada.
+
+on:
+  schedule:
+    - cron: '15 12 * * *'
+  workflow_dispatch:
+    inputs:
+      fecha:
+        description: 'Forzar una fecha (AAAA-MM-DD). Vacío = hoy.'
+        required: false
+        type: string
+      dry_run:
+        description: 'Simular sin publicar de verdad'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Publicar
+        env:
+          META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+          META_PAGE_ID: ${{ secrets.META_PAGE_ID }}
+          META_IG_BUSINESS_ACCOUNT_ID: ${{ secrets.META_IG_BUSINESS_ACCOUNT_ID }}
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.fecha }}" ]; then
+            ARGS="$ARGS --fecha ${{ inputs.fecha }}"
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          python publisher.py $ARGS
+
+      - name: Guardar el calendario actualizado (marcas de publicado)
+        run: |
+          git config user.name  "Calco Marketing Bot"
+          git config user.email "marketing@calco.uy"
+          git add contenido/
+          if git diff --staged --quiet; then
+            echo "No hay cambios para guardar."
+          else
+            git commit -m "Marcar publicaciones del día como publicadas"
+            git push
+          fi
+
+      - name: Avisar si falló
+        if: failure()
+        run: |
+          echo "La publicación diaria falló."
+          echo "Revisar:"
+          echo "1) que existan los 3 secretos: META_PAGE_ACCESS_TOKEN, META_PAGE_ID, META_IG_BUSINESS_ACCOUNT_ID"
+          echo "2) que el token de página no haya vencido (se renueva ~cada 60 días)"
+          echo "3) los logs del paso 'Publicar' de arriba para el detalle exacto"
