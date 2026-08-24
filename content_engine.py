@@ -324,6 +324,38 @@ def construir_prompt(marca, esqueleto, red, ganchos_usados, temas_usados_este_me
     prohibido_txt = "\n".join(f"- {p}" for p in marca["voz"]["prohibido"])
     difs_txt = "\n".join(f"- {d}" for d in marca["diferenciales"])
 
+    # Regla de certificación, calculada según los productos que toca esta
+    # tanda. El certificado UNIT-ISO 9001 no cubre todos los rubros, y UNIT
+    # prohíbe dar a entender un alcance mayor al real (instructivo CS/PI 016).
+    cert = marca.get("certificacion")
+    cert_txt = ""
+    if cert:
+        productos_tanda = {e.get("producto") for e in esqueleto if e.get("producto")}
+        fuera = set(cert.get("productos_FUERA_del_alcance", []))
+        toca_fuera = bool(productos_tanda & fuera)
+
+        cert_txt = (
+            "\n\nCÓMO NOMBRAR LA CERTIFICACIÓN (regla estricta, la controla el "
+            "organismo certificador)\n"
+            f"- Escribir siempre «{cert['formula_corta']}». Nunca «imprenta "
+            "certificada», «calidad certificada» ni «certificados» a secas: "
+            "UNIT exige que su nombre conste y esas formas ambiguas están "
+            "expresamente prohibidas en su instructivo.\n"
+            "- Nunca «certificados por ISO»: ISO no certifica empresas.\n"
+            f"- Alcance real del certificado: {cert['alcance']} "
+            "No se puede sugerir que cubre más que eso.\n"
+            "- La certificación es de 2021; la empresa opera desde 2005. Son "
+            "datos separados: nunca escribir «certificados desde 2005»."
+        )
+        if toca_fuera:
+            cert_txt += (
+                "\n- ATENCIÓN EN ESTA TANDA: hay publicaciones sobre productos "
+                f"FUERA del alcance certificado ({', '.join(sorted(productos_tanda & fuera))}). "
+                "En esas publicaciones NO menciones la certificación de ninguna "
+                "forma."
+            )
+
+
     if red == "linkedin":
         instruccion_red = (
             f"Audiencia: {marca['linkedin']['audiencia']}\n"
@@ -379,7 +411,7 @@ PROHIBIDO
 {prohibido_txt}
 
 DIFERENCIALES REALES (son los únicos hechos que podés afirmar sobre la empresa)
-{difs_txt}
+{difs_txt}{cert_txt}
 
 PRODUCTOS
 {productos_txt}
