@@ -1,169 +1,98 @@
-/**
- * CALCO INDUSTRIA GRÁFICA — Google Ads Scripts
- * migrar_puja_dia_21.js
- *
- * QUÉ HACE
- * Implementa la decisión #7 de la Sesión 1: arrancar con "Maximizar clics"
- * (CPC máx USD 0,45) y migrar a "Maximizar conversiones" recién cuando
- * cada campaña acumule al menos 21 días de actividad Y al menos 15
- * conversiones. Arrancar en automático sin datos hace que Google gaste
- * rápido y mal — por eso la migración es progresiva, campaña por
- * campaña, no todas el mismo día calendario.
- *
- * Cada campaña migra individualmente cuando CUMPLE SUS DOS condiciones,
- * no en una fecha fija. Si C1 junta 15 conversiones en 18 días y C2
- * tarda 30, migran en momentos distintos. Eso es intencional.
- *
- * Corre una sola vez que migra y después queda en modo "vigilancia":
- * si por algún motivo una campaña nueva se crea más adelante, este script
- * también la va a evaluar cuando le toque.
- *
- * CUÁNDO CORRE
- * Diario, sugerido 07:30 America/Montevideo (después de los otros dos
- * scripts semanales, pero este se revisa todos los días porque el
- * cumplimiento de condiciones puede caer cualquier día de la semana).
- *
- * CÓMO INSTALARLO
- * Igual que los anteriores. Programar: Diario, 07:30.
- */
+# Instalación de datos estructurados y llms.txt
+### Calco Industria Gráfica · para Nicolás
 
-// ---------------------------------------------------------------------------
-// CONFIGURACIÓN
-// ---------------------------------------------------------------------------
+Dos archivos, dos pasos. Ninguno de los dos requiere tocar código de la web,
+solo subir archivos por FTP o por el administrador de archivos del hosting.
 
-const DIAS_MINIMOS_ANTES_DE_MIGRAR = 21;
-const CONVERSIONES_MINIMAS_PARA_MIGRAR = 15;
-const CPC_MAXIMO_FASE_1 = 0.45; // USD, estrategia "Maximizar clics"
+---
 
-// ---------------------------------------------------------------------------
-// EJECUCIÓN
-// ---------------------------------------------------------------------------
+## 1. Mu-plugin de WordPress: `calco-datos-estructurados.php`
 
-function main() {
-  Logger.log('=== Calco: evaluación diaria de migración de puja ===');
-  Logger.log('Fecha: ' + new Date());
+**Qué hace:** agrega datos estructurados (JSON-LD) a cada página del sitio,
+para que Google y los buscadores de IA entiendan mejor qué es Calco, qué
+productos ofrece y cómo contactar. Detecta si Yoast o Rank Math ya están
+instalados y no duplica nada de lo que esos plugins generan.
 
-  const campanas = AdsApp.campaigns()
-    .withCondition("campaign.status = 'ENABLED'")
-    .withCondition("campaign.advertising_channel_type = 'SEARCH'")
-    .get();
+**Dónde va:** `wp-content/mu-plugins/calco-datos-estructurados.php`
 
-  let evaluadas = 0;
-  let migradas = 0;
-  let enEspera = [];
+**Pasos:**
 
-  while (campanas.hasNext()) {
-    const campana = campanas.next();
-    evaluadas++;
+1. Entrar por FTP o por el administrador de archivos del hosting (cPanel,
+   Plesk, o el que use el hosting de calco.uy)
+2. Ir a `wp-content/`
+3. Si la carpeta `mu-plugins` **no existe**, crearla ahí mismo (mu-plugins
+   se activa solo, no aparece en el listado de plugins de WordPress y no
+   hace falta activarlo a mano — por eso se usa para esto)
+4. Subir `calco-datos-estructurados.php` dentro de esa carpeta
+5. Listo. No hay que activar nada en el panel de WordPress.
 
-    const estrategiaActual = obtenerEstrategiaPuja(campana);
+**Antes de dar por terminado**, revisar dos datos dentro del archivo que
+convienen confirmarse (están marcados con comentarios `CONFIRMAR` cerca del
+principio del archivo):
+- El **código postal** (hoy dice `15005`, pero en la bitácora original quedó
+  pendiente confirmar si es `15005` o `15002`)
+- El **teléfono** y la **dirección**, por si cambiaron desde julio de 2026
 
-    // Si ya está en Maximizar Conversiones, no hay nada que hacer
-    if (estrategiaActual === 'MAXIMIZE_CONVERSIONS') {
-      continue;
-    }
+**Verificación (5 minutos):**
 
-    const diasActiva = calcularDiasActiva(campana);
-    const stats = campana.getStatsFor('ALL_TIME');
-    const conversiones = stats.getConversions();
+1. Ir a [Google Rich Results Test](https://search.google.com/test/rich-results)
+2. Pegar la URL de calco.uy y de al menos una página de producto
+3. Confirmar que aparece el bloque de **Organization / LocalBusiness** sin
+   errores
+4. En la página de un producto, confirmar que aparece **Service** (no
+   "Product") en los datos detectados — si en algún momento vuelve a
+   aparecer "Product" sin oferta, avisar a Marketing: es el bug que ya se
+   corrigió una vez
 
-    if (diasActiva >= DIAS_MINIMOS_ANTES_DE_MIGRAR
-        && conversiones >= CONVERSIONES_MINIMAS_PARA_MIGRAR) {
+⚠️ **Nota importante sobre las FAQ:** el plugin también agrega preguntas
+frecuentes (FAQPage) en la home y en las categorías de producto. Ese
+marcado **no genera un resultado enriquecido en Google** — Google
+discontinuó esa función para todos los sitios el 7 de mayo de 2026. Sigue
+siendo información útil para el usuario y potencialmente para los
+buscadores de IA, pero no hay que esperar ver el típico desplegable de
+preguntas en los resultados de búsqueda de Google.
 
-      migrarAMaximizarConversiones(campana);
-      migradas++;
+**Antes de que se indexe:** las preguntas y respuestas del archivo son
+afirmaciones públicas y verificables sobre la empresa (depósito legal,
+ubicación, horarios, qué se produce). Conviene que alguien de Marketing las
+lea una vez antes de la primera indexación, por si algún dato cambió.
 
-      Logger.log('MIGRADA: "' + campana.getName() + '" | Días activa: '
-        + diasActiva + ' | Conversiones acumuladas: ' + conversiones
-        + ' | Maximizar clics → Maximizar conversiones');
+---
 
-      notificarMigracion(campana, diasActiva, conversiones);
+## 2. Archivo `llms.txt`
 
-    } else {
-      enEspera.push({
-        nombre: campana.getName(),
-        dias: diasActiva,
-        conversiones: conversiones
-      });
-    }
-  }
+**Qué hace:** es el archivo que leen ChatGPT, Perplexity, Gemini y otros
+asistentes de IA para entender rápido de qué trata el sitio, sin tener que
+rastrear todas las páginas. Incluye la nota de desambiguación frente a
+Calco Impresos y Calco Sport Adhesivos.
 
-  Logger.log('--- Resumen ---');
-  Logger.log('Campañas evaluadas: ' + evaluadas);
-  Logger.log('Campañas migradas hoy: ' + migradas);
+**Dónde va:** en la **raíz** del sitio, junto a donde vive `robots.txt`.
 
-  if (enEspera.length > 0) {
-    Logger.log('--- Todavía en Fase 1 (Maximizar clics) ---');
-    enEspera.forEach(function(c) {
-      Logger.log('  ' + c.nombre + ' | Días activa: ' + c.dias + '/'
-        + DIAS_MINIMOS_ANTES_DE_MIGRAR + ' | Conversiones: '
-        + c.conversiones + '/' + CONVERSIONES_MINIMAS_PARA_MIGRAR);
-    });
-  }
-}
+**Pasos:**
 
-// ---------------------------------------------------------------------------
-// FUNCIONES AUXILIARES
-// ---------------------------------------------------------------------------
+1. Por FTP o administrador de archivos, ir a la carpeta raíz del sitio
+   (la misma donde está `wp-config.php`)
+2. Subir el archivo `llms.txt` tal cual, sin cambiarle el nombre
+3. Verificar que quedó accesible entrando en el navegador a
+   `https://calco.uy/llms.txt` — tiene que mostrar el archivo como texto
+   plano, no un error 404
 
-function obtenerEstrategiaPuja(campana) {
-  // getBiddingStrategyType() devuelve strings como 'MANUAL_CPC',
-  // 'MAXIMIZE_CLICKS', 'MAXIMIZE_CONVERSIONS', etc.
-  try {
-    return campana.getBiddingStrategyType();
-  } catch (e) {
-    Logger.log('No se pudo leer la estrategia de puja de "'
-      + campana.getName() + '": ' + e);
-    return 'DESCONOCIDA';
-  }
-}
+**Si el hosting no permite subir archivos a la raíz** (pasa en algunos
+hostings compartidos con WordPress), el mu-plugin del paso 1 ya tiene una
+función de respaldo (`ruta_llms_txt()`) que sirve el contenido desde
+`/llms.txt` igual, sin necesitar acceso a la raíz — pero solo funciona si
+no existe ya un archivo físico con ese nombre, así que primero intentar
+siempre subirlo directo.
 
-function calcularDiasActiva(campana) {
-  // Usa la fecha de inicio de la campaña. Si por algún motivo no está
-  // disponible, cae a contar desde la primera fecha con impresiones.
-  const inicio = campana.getStartDate();
-  if (!inicio) return 0;
+---
 
-  const fechaInicio = new Date(inicio.year, inicio.month - 1, inicio.day);
-  const hoy = new Date();
-  const diffMs = hoy - fechaInicio;
-  return Math.floor(diffMs / (1000 * 60 * 60 * 24));
-}
+## Orden recomendado
 
-function migrarAMaximizarConversiones(campana) {
-  // NOTA IMPORTANTE: la API de Scripts permite leer la estrategia de puja
-  // pero el cambio de estrategia (de Maximizar Clics a Maximizar
-  // Conversiones) requiere pasar por el objeto de configuración de la
-  // campaña. Si el método directo no está disponible en la versión de
-  // Scripts vigente al momento de ejecutar esto, el script deja el log
-  // detallado y el cambio se hace manualmente en 2 clics desde la UI:
-  // Campaña → Configuración → Puja → Cambiar estrategia.
-  try {
-    campana.bidding().setStrategy('MAXIMIZE_CONVERSIONS');
-  } catch (e) {
-    Logger.log('ATENCIÓN: no se pudo migrar automáticamente la campaña "'
-      + campana.getName() + '". Cumple las condiciones para migrar '
-      + '(21+ días, 15+ conversiones) pero requiere el cambio manual: '
-      + 'Campaña → Configuración → Puja → "Maximizar conversiones". '
-      + 'Error técnico: ' + e);
-  }
-}
+1. Mu-plugin primero (paso 1) — no depende de nada
+2. `llms.txt` después (paso 2) — independiente, pero conviene hacerlo en la
+   misma sesión para no olvidarlo
+3. Avisar a Marketing cuando ambos estén verificados, para tildar la tarea
+   en `memoria.md`
 
-function notificarMigracion(campana, dias, conversiones) {
-  const destinatario = 'marketing@calco.uy';
-  const asunto = 'Calco Ads — "' + campana.getName() + '" migró a Maximizar Conversiones';
-  const cuerpo = 'La campaña "' + campana.getName() + '" cumplió las condiciones '
-    + 'para pasar de la estrategia inicial (Maximizar clics, CPC máx $'
-    + CPC_MAXIMO_FASE_1 + ') a Maximizar Conversiones:\n\n'
-    + '- Días activa: ' + dias + '\n'
-    + '- Conversiones acumuladas: ' + conversiones + '\n\n'
-    + 'A partir de ahora Google va a optimizar automáticamente hacia '
-    + 'conversiones en vez de clics. Es normal que el volumen de clics '
-    + 'baje un poco mientras el algoritmo reajusta en los primeros días.';
-
-  try {
-    MailApp.sendEmail(destinatario, asunto, cuerpo);
-  } catch (e) {
-    Logger.log('No se pudo enviar el mail de notificación: ' + e);
-  }
-}
+**Tiempo estimado total:** 15 a 20 minutos, la mayoría esperando que
+Google Rich Results Test procese la verificación.

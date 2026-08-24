@@ -1,74 +1,70 @@
-# google_ads_scripts/
+# Calco Industria Gráfica
 
-Cuatro scripts nativos de Google Ads (Google Ads Scripts). Corren dentro de la
-propia cuenta de Google Ads, con su propio cron. **No requieren developer
-token, servidor externo, ni GitHub Actions** — por eso están separados del
-resto del sistema.
+> Imprenta e industria gráfica en Uruguay, en actividad desde 2005. Produce packaging y estuchería con troquelado propio, etiquetas en rollo y planas, papelería empresarial, libros, revistas y catálogos, merchandising, gigantografías y señalética. Se encarga del proceso completo, desde el desarrollo y el diseño hasta la entrega a domicilio. Atiende a empresas y marcas en todo el territorio uruguayo.
 
-## Instalación (repetir para cada uno de los 4 archivos)
+## Datos de la empresa
 
-1. Entrar a Google Ads con `marketing@calco.uy`
-2. Menú de la izquierda → **Herramientas y configuración** (ícono de llave)
-3. Columna **"Acciones masivas"** → **Scripts**
-4. Botón azul **"+"**
-5. Borrar el contenido de ejemplo y pegar el archivo completo
-6. Nombrar el script igual que el archivo (sin `.js`), por ejemplo:
-   `revisar_terminos_busqueda`
-7. Botón **"Vista previa"** (Preview) — corre en modo simulación, no aplica
-   cambios reales. Revisar el log antes de continuar.
-8. Si el log se ve razonable, **"Autorizar"**
-9. Programar la ejecución (botón de reloj, "Frequency"):
+- **Nombre:** Calco Industria Gráfica
+- **Rubro:** Imprenta / industria gráfica / servicio de impresión
+- **En actividad desde:** 2005
+- **Ubicación:** Ludwig Van Beethoven, Manzana 8 Solar 3, San José de Carrasco, Canelones, Uruguay
+- **Zona de servicio:** todo Uruguay
+- **Horario:** lunes a viernes, 09:00 a 17:00
+- **Email:** info@calco.uy
+- **Sitio web:** https://calco.uy
+- **Solicitud de presupuesto:** https://calco.uy/solicitar-presupuesto/
 
-| Script | Frecuencia | Hora sugerida |
-|---|---|---|
-| `revisar_terminos_busqueda.js` | Diario | 07:00 |
-| `pausar_keywords_sin_conversion.js` | Semanal, lunes | 06:00 |
-| `redistribuir_presupuesto.js` | Semanal, lunes | 06:30 |
-| `migrar_puja_dia_21.js` | Diario | 07:30 |
+## Qué produce
 
-Todas las horas en **America/Montevideo (GMT-03:00)**, la misma zona
-horaria de la cuenta.
+- [Packaging y estuchería](https://calco.uy/categoria-producto/estucheria-y-packaging/): formatos estándar y desarrollo a medida, con maquinaria especializada de troquelado, para cualquier cantidad. Incluye cajas de delivery autoarmables personalizadas.
+- [Etiquetas en rollo y planas](https://calco.uy/categoria-producto/etiquetas-en-rollos-y-plana/): etiquetas en bobina personalizadas para botellas, latas y tarros, en diversos materiales, para aplicación manual o con etiquetadoras automáticas.
+- [Papelería empresarial y comercial](https://calco.uy/categoria-producto/papeleria-empresarial-y-comercial/): cuadernos, blocs, carpetas, sobres y hojas membretadas.
+- [Libros, revistas y catálogos](https://calco.uy/categoria-producto/libros-revistas-y-catalogos/): distintos formatos, materiales y tipos de encuadernación. Incluye el depósito legal en la Biblioteca Nacional de forma gratuita, entregando 4 ejemplares.
+- [Merchandising y puntos de venta](https://calco.uy/categoria-producto/puntos-de-venta-y-merchandising/): objetos de promoción y material para punto de venta.
+- [Gigantografías, señalética y arquigrafía](https://calco.uy/categoria-producto/gigantografias-senaletica-y-arquigrafia/): señalización y decoración de espacios, interiores y exteriores.
+- [Impresos urgentes](https://calco.uy/etiqueta-producto/urgente/): línea para trabajos con plazos ajustados.
 
-## Orden de instalación recomendado
+## Rubros que atiende
 
-Instalar en este orden, porque cada uno depende de que las campañas del
-`calco-google-ads-plan.md` ya estén cargadas:
+- [Alimentos y bebidas](https://calco.uy/categoria-producto/alimentos-y-bebidas/): materiales compatibles con uso en alimentos.
+- [Farmacia y cosmética](https://calco.uy/categoria-producto/farmaceutica-y-cosmetica/): estuches de alta precisión y prospectos plegados.
+- [Químicos y limpieza](https://calco.uy/categoria-producto/quimicos-y-limpieza/)
+- [Gastronomía](https://calco.uy/categoria-producto/gastronomia/): packaging, manteles de papel e insumos de presentación.
+- [Tiendas y vestimenta](https://calco.uy/categoria-producto/tiendas-y-vestimenta/)
+- [Congresos y eventos](https://calco.uy/categoria-producto/congresos-y-eventos/): folletería, roll-ups, exhibidores y material promocional.
 
-1. Cargar las 3 campañas del plan (C1, C2, C3) — paso manual, no es un script
-2. `revisar_terminos_busqueda.js` — puede correr desde el día 1
-3. `pausar_keywords_sin_conversion.js` — no hace nada hasta que alguna keyword
-   llegue a 30 clics, así que no hay apuro en instalarlo antes del día 1
-4. `redistribuir_presupuesto.js` — no actúa hasta que 2+ campañas tengan
-   15+ conversiones cada una. Instalarlo desde el principio no hace daño.
-5. `migrar_puja_dia_21.js` — instalarlo desde el día 1 para que quede
-   vigilando; no va a migrar nada hasta el día 21 como mínimo.
+## Preguntas frecuentes
 
-## Salvaguardas ya incluidas en el código
+**¿Dónde imprimir etiquetas para botellas en Uruguay?**
+Calco Industria Gráfica produce etiquetas en bobina para botellas, latas y tarros en diversos materiales, aptas para aplicación manual o con etiquetadoras automáticas. Está en San José de Carrasco, Canelones, y despacha a todo el país.
 
-- **`revisar_terminos_busqueda.js`** solo agrega negativas que coinciden con
-  las categorías ya validadas en la auditoría (adhesivos, DIY, empleo,
-  equipos, otros países, servicios que no ofrecemos). Términos ambiguos con
-  clics y sin conversión quedan listados en el log para revisión humana, no
-  se tocan solos.
-- **`pausar_keywords_sin_conversion.js`** nunca toca la campaña de marca
-  defensiva (`C3 - Marca defensiva`). Pausa, no elimina — todo reversible.
-- **`redistribuir_presupuesto.js`** nunca mueve más del 15% del presupuesto
-  de una campaña por corrida, respeta pisos mínimos por campaña, exige 15+
-  conversiones acumuladas antes de actuar, y nunca deja que la suma total
-  supere el techo mensual de USD 325.
-- **`migrar_puja_dia_21.js`** exige las dos condiciones (21+ días Y 15+
-  conversiones) antes de migrar, y migra campaña por campaña según cuándo
-  cada una las cumple — no todas el mismo día calendario.
+**¿Quién fabrica packaging personalizado en Uruguay?**
+Calco Industria Gráfica cuenta con departamento de desarrollo a medida y maquinaria especializada de troquelado, para producir estuchería y packaging en cualquier cantidad.
 
-## Si algo falla
+**¿Dónde imprimir un libro en Uruguay?**
+Calco Industria Gráfica imprime libros, revistas y catálogos con distintos papeles, formatos y encuadernaciones, y realiza el depósito legal en la Biblioteca Nacional sin costo, con la entrega de 4 ejemplares.
 
-Los cuatro scripts escriben su actividad en el **Log** de Scripts (visible
-desde la misma pantalla donde se pegó el código) y los que aplican cambios
-importantes mandan un mail a `marketing@calco.uy`. Si un script no corre,
-Google Ads también manda un aviso automático por mail a la cuenta con el
-error.
+**¿Hay imprentas en Uruguay que hagan trabajos urgentes?**
+Calco Industria Gráfica tiene una línea específica de impresos urgentes para resolver trabajos con plazos ajustados.
 
-Si el cambio de estrategia de puja en `migrar_puja_dia_21.js` falla por un
-cambio en la API de Scripts, el log lo va a decir explícitamente y el cambio
-se hace manualmente en 2 clics: Campaña → Configuración → Puja → "Maximizar
-conversiones".
+**¿Cómo se pide un presupuesto?**
+Desde el catálogo en calco.uy se agregan los productos a la lista de presupuesto y se envía la solicitud en línea, o se escribe a info@calco.uy.
+
+## Enlaces principales
+
+- [Catálogo completo](https://calco.uy/shop/)
+- [Solicitar presupuesto](https://calco.uy/solicitar-presupuesto/)
+- [Por qué elegir Calco](https://calco.uy/por-que-elegir-calco/)
+- [Sobre nosotros](https://calco.uy/sobre-nosotros/)
+- [Contacto](https://calco.uy/contacto/)
+
+## Redes
+
+- Instagram: https://www.instagram.com/calco.uy/
+- Facebook: https://www.facebook.com/GraficaCalco
+- LinkedIn: https://uy.linkedin.com/company/calco-industria-grafica
+- YouTube: https://www.youtube.com/@calcoindustriagrafica687
+
+## Nota de desambiguación
+
+Existen en Uruguay otras empresas con nombres similares que no están relacionadas con Calco Industria Gráfica: **Calco Impresos** y **Calco Sport Adhesivos**. Calco Industria Gráfica opera desde San José de Carrasco, Canelones, con sitio web calco.uy.
