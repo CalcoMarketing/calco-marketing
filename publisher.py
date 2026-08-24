@@ -72,6 +72,17 @@ except ImportError:
 RAIZ = Path(__file__).parent
 DIR_CONTENIDO = RAIZ / "contenido"
 
+# Búsqueda de fotos en Google Drive. Si el módulo no está, el sistema
+# sigue funcionando solo con las fotos del repositorio.
+try:
+    import drive_fotos
+except ImportError:
+    class _SinDrive:
+        @staticmethod
+        def esta_configurado():
+            return False
+    drive_fotos = _SinDrive()
+
 GRAPH_VERSION = "v21.0"
 GRAPH_BASE = f"https://graph.facebook.com/{GRAPH_VERSION}"
 
@@ -387,10 +398,23 @@ def main():
             continue
 
         archivo = ruta_medio_local(anio_mes, pub_id)
+
+        # Si no está en el repositorio, se busca en la carpeta de Drive
+        # "FOTOS PARA PUBLICAR". Es la vía normal: Nicolás sube ahí desde
+        # el celular. El repositorio queda como respaldo.
+        if not archivo and drive_fotos.esta_configurado():
+            file_id, nombre_drive = drive_fotos.buscar_medio(pub_id)
+            if file_id:
+                destino = DIR_CONTENIDO / anio_mes / "media" / nombre_drive
+                if drive_fotos.descargar(file_id, destino):
+                    archivo = destino
+                    print(f"  Foto tomada de Drive: {nombre_drive}")
+
         if not archivo:
-            print(f"  Falta el archivo de medio en contenido/{anio_mes}/media/"
-                  f"{pub_id}.(jpg|png|mp4|...). Se salta por ahora; Nicolás "
-                  "puede subirlo y este script la retoma en la próxima corrida.")
+            donde = "Drive o en el repositorio" if drive_fotos.esta_configurado() \
+                    else "el repositorio"
+            print(f"  No hay foto para {pub_id} en {donde}. Se salta por ahora; "
+                  "en cuanto se suba, este script la retoma en la próxima corrida.")
             continue
 
         url_medio = url_medio_publica(raw_base, anio_mes, archivo)

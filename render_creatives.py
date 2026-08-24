@@ -64,6 +64,17 @@ RAIZ = Path(__file__).parent
 DIR_CONTENIDO = RAIZ / "contenido"
 ARCHIVO_MARCA = RAIZ / "marca" / "sistema_de_marca.json"
 
+# Búsqueda de fotos en Google Drive, para no pisar una foto real que ya
+# se subió ahí. Si el módulo no está, se mira solo el repositorio.
+try:
+    import drive_fotos
+except ImportError:
+    class _SinDrive:
+        @staticmethod
+        def esta_configurado():
+            return False
+    drive_fotos = _SinDrive()
+
 # Pilares/formatos que este script NUNCA toca: necesitan una foto o
 # video real y nuevo, no una imagen de catálogo reciclada.
 PILARES_EXCLUIDOS = {"produccion"}
@@ -90,10 +101,22 @@ def cargar_calendario(anio_mes):
 
 
 def ya_tiene_medio(anio_mes, pub_id):
+    """¿Ya existe la foto real de esta publicación?
+
+    Mira primero en el repositorio y después en la carpeta de Drive. Si
+    está en cualquiera de los dos, NO se genera imagen de respaldo: la
+    foto real de Nicolás siempre tiene prioridad sobre una de catálogo."""
     carpeta = DIR_CONTENIDO / anio_mes / "media"
     for ext in (".jpg", ".jpeg", ".png", ".mp4", ".mov"):
         if (carpeta / f"{pub_id}{ext}").exists():
             return True
+
+    if drive_fotos.esta_configurado():
+        file_id, nombre = drive_fotos.buscar_medio(pub_id)
+        if file_id:
+            print(f"    ({pub_id} ya tiene foto en Drive: {nombre})")
+            return True
+
     return False
 
 
