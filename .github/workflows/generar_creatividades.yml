@@ -1,0 +1,77 @@
+name: Generar creatividades de respaldo
+
+# Corre todos los días a las 11:55 UTC (08:55 Montevideo), 20 minutos
+# antes que "Publicar contenido diario" (que corre a las 09:15). Así, si
+# Nicolás no llegó a subir la foto pedida, ya hay una imagen de respaldo
+# lista (foto real de catálogo + plantilla de marca) antes de que
+# publisher.py intente publicar.
+#
+# Si Nicolás sube su propia foto después, esa tiene prioridad: este
+# workflow no la pisa en corridas futuras.
+
+on:
+  schedule:
+    - cron: '55 11 * * *'
+  workflow_dispatch:
+    inputs:
+      fecha:
+        description: 'Forzar una fecha (AAAA-MM-DD). Vacío = hoy.'
+        required: false
+        type: string
+      dry_run:
+        description: 'Simular sin generar archivos'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  renderizar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: |
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Generar creatividades de respaldo
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.fecha }}" ]; then
+            ARGS="$ARGS --fecha ${{ inputs.fecha }}"
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          python render_creatives.py $ARGS
+
+      - name: Guardar las imágenes generadas
+        run: |
+          git config user.name  "Calco Marketing Bot"
+          git config user.email "marketing@calco.uy"
+          git add contenido/
+          if git diff --staged --quiet; then
+            echo "No hay cambios para guardar."
+          else
+            git commit -m "Generar creatividades de respaldo del día"
+            git push
+          fi
+
+      - name: Avisar si falló
+        if: failure()
+        run: |
+          echo "La generación de creatividades falló."
+          echo "Revisar los logs del paso 'Generar creatividades de respaldo'."
+          echo "Esto NO bloquea la publicación: si Nicolás ya subió su propia"
+          echo "foto para hoy, 'Publicar contenido diario' funciona igual."
