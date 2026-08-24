@@ -46,6 +46,8 @@ jobs:
           playwright install --with-deps chromium
 
       - name: Generar creatividades de respaldo
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: |
           ARGS=""
           if [ -n "${{ inputs.fecha }}" ]; then
