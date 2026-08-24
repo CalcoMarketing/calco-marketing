@@ -10,19 +10,19 @@ perfectas: la textura real de una imprenta vende más que un render.
 
 ---
 
-1. **📷 FOTO** — para publicar el 2/09 — Foto de una caja de delivery autoarmable desplegada y otra armada al lado, sobre una mesa de taller, con el troquel de corte visible de fondo.
-2. **📷 FOTO** — para publicar el 4/09 — Video corto en primer plano de la máquina troqueladora presionando un pliego de cartón, con el troquel metálico bajando y el corte apareciendo en la lámina.
-3. **📷 FOTO** — para publicar el 7/09 — Foto de una bobina de etiquetas colocada en una etiquetadora automática, con el detalle del paso y el mandril visibles.
-4. **📷 FOTO** — para publicar el 9/09 — Foto de una botella de salsa artesanal con etiqueta, en una heladera abierta, con gotas de condensación visibles sobre el vidrio.
-5. **📷 FOTO** — para publicar el 11/09 — Foto de una pila de libros recién impresos en el taller, con uno abierto mostrando el lomo cosido, y de fondo la zona de expedición.
-6. **📷 FOTO** — para publicar el 14/09 — Foto de un folleto apilado en una mesa de oficina junto a un reloj de pared, en un ambiente de trabajo, con alguien revisando el material al fondo.
-7. **📷 FOTO** — para publicar el 16/09 — Foto de una caja de delivery autoarmable ya montada, sostenida con una mano, mostrando el cierre sin cinta, con el logo de una marca ficticia impreso.
-8. **📷 FOTO** — para publicar el 18/09 — Primer plano de un estuche con barniz sectorizado sobre un logo, iluminado lateralmente para que se vea el contraste entre el área brillante y el fondo mate.
-9. **📷 FOTO** — para publicar el 21/09 — Foto de un libro abierto sobre una mesa de trabajo, mostrando el tipo de papel y la mancha de texto, con luz natural.
-10. **📷 FOTO** — para publicar el 23/09 — Macro de un prospecto farmacéutico perfectamente plegado, mostrando los dobleces alineados y el texto legible, sobre un fondo neutro.
-11. **📷 FOTO** — para publicar el 25/09 — Foto de un rollo de etiquetas impresas en bobina, con el material visible y el borde del rollo prolijo, sobre una mesa de taller.
-12. **📷 FOTO** — para publicar el 28/09 — Primer plano de una máquina troqueladora en movimiento, con el troquel de acero bajando sobre una lámina de cartón, y viruta visible al costado.
-13. **📷 FOTO** — para publicar el 30/09 — Primer plano de la mano de un operario sosteniendo dos muestras de papel de distinto gramaje frente a una máquina de impresión en el taller.
+1. **📷 FOTO** — para publicar el 2/09 — Fotografía en el taller de una caja de delivery autoarmable desplegada y armada, con el troquelado visible en los bordes y el logo de una marca ficticia o neutra.
+2. **📷 FOTO** — para publicar el 4/09 — Primer plano de una bobina de etiquetas en la imprenta, con una etiqueta despegada mostrando el material y la impresión para una bebida o conserva.
+3. **📷 FOTO** — para publicar el 7/09 — Fotografía de un libro recién impreso sobre la mesa de la imprenta, con las tapas abiertas y el lomo visible, en un ambiente de taller.
+4. **📷 FOTO** — para publicar el 9/09 — Fotografía en blanco y negro del troquel de acero sobre la máquina troqueladora, con el operario ajustando la pieza, en el taller.
+5. **📷 FOTO** — para publicar el 11/09 — Fotografía del frente de la imprenta o del taller, con la maquinaria de fondo y el texto 'Calco Industria Gráfica' visible en la fachada o en una pared.
+6. **📷 FOTO** — para publicar el 14/09 — Fotografía de una pila de impresos recién salidos de la máquina, con el operario revisando el resultado y un cronómetro o reloj de fondo que refuerce la idea de urgencia.
+7. **📷 FOTO** — para publicar el 16/09 — Primer plano de la plancha de troquelado con las cajas recién cortadas alrededor, sobre la mesa de la máquina.
+8. **📷 FOTO** — para publicar el 18/09 — Estuche de cartulina con acabado mate y relieve, abierto, con un prospecto plegado apoyado al lado, sobre fondo claro.
+9. **📷 FOTO** — para publicar el 21/09 — Pila de libros recién impresos con encuadernación rústica, vistos de canto, en el sector de terminación de la imprenta.
+10. **📷 FOTO** — para publicar el 23/09 — Operario revisando un pliego impreso contra la luz de la mesa de control, con una lupa de aumento en la mano.
+11. **📷 FOTO** — para publicar el 25/09 — Rollo de etiquetas en bobina sobre la mesa de la rebobinadora, con una etiqueta parcialmente despegada mostrando el material.
+12. **📷 FOTO** — para publicar el 28/09 — Caja de delivery autoarmable personalizada con el logo de un restaurante, armada y con comida adentro, sobre una mesa de madera.
+13. **📷 FOTO** — para publicar el 30/09 — Primer plano de una mano sosteniendo una etiqueta en bobina en la imprenta, con el material enrollado de fondo.
 
 ---
 
