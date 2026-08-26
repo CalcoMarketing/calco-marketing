@@ -6,46 +6,64 @@ render_creatives.py
 
 QUÉ HACE
 Para las publicaciones del calendario a las que TODAVÍA les falta el
-archivo de medio (Nicolás no llegó a subir la foto pedida), genera una
-imagen de respaldo automática:
+archivo de medio (Nicolás no llegó a subir la foto pedida), busca una
+imagen de respaldo, en este orden de prioridad:
 
-  1. Busca la foto real del producto en calco.uy (la que ya está
-     publicada en el catálogo — nunca una imagen inventada ni generada
-     por IA).
-  2. Le aplica una plantilla de marca simple (logo, franja inferior con
-     el nombre y el sitio) usando HTML/CSS renderizado a PNG con
-     Playwright.
-  3. La deja en contenido/AAAA-MM/media/<id>.jpg, en el mismo lugar
-     donde publisher.py espera encontrar la foto.
+  1. Foto real subida por Nicolás (a Drive o al repo) — siempre gana si existe.
+  2. Foto real del catálogo web (calco.uy) que coincida con el objeto del post.
+  3. Imagen generada por IA (Google Gemini / "Nano Banana"), como último
+     recurso cuando no hay foto real ni coincidencia de catálogo.
+
+En los tres casos, la imagen se recorta a 1080x1080 y se deja en
+contenido/AAAA-MM/media/<id>.jpg, donde publisher.py espera encontrarla.
+
+SOBRE LA OPCIÓN 3 (IMÁGENES GENERADAS POR IA)
+Desde la Sesión 5 (26/08/2026) se decidió permitir imágenes generadas por
+IA para cualquier tipo de post, incluidos los que muestran producto o
+proceso — reemplazando la restricción anterior. Es una decisión explícita
+de negocio, no técnica: se prueba así y se evalúa el resultado.
+
+Por prudencia, este script:
+  - Registra en un manifiesto (media/fuentes_imagenes.json) qué fuente se
+    usó para cada publicación (real / catalogo / ia), para poder revisar
+    después qué tan seguido se recurre a IA y con qué resultado.
+  - Sigue prefiriendo foto real o de catálogo por sobre IA cuando ambas
+    están disponibles: la IA es el último recurso, no la opción por defecto.
+  - Para productos con estructura técnica visible y compleja (packaging
+    con troquelado abierto, por ejemplo), la calidad de la IA es más
+    variable — ver pruebas de la Sesión 5. Conviene revisar esas
+    publicaciones puntualmente antes de que el post salga (no hay chequeo
+    automático de esto todavía).
 
 QUÉ NO HACE, A PROPÓSITO
 - No genera nada para el pilar "produccion" (Detrás de la producción):
-  esos posts piden explícitamente una foto nueva del taller, y usar una
-  foto de catálogo ahí sería mostrar algo que no es lo que se anunció.
+  esos posts piden explícitamente una foto nueva del taller real.
 - No genera nada para los reels (formato "reel"): un video no se puede
-  fabricar a partir de una foto fija sin que quede falso.
+  fabricar a partir de una imagen fija sin que quede falso.
 - No genera nada si la publicación ya tiene un archivo de medio real
-  (Nicolás siempre tiene prioridad: si subió su foto, se usa esa).
-- No inventa fotos con IA. Todo lo que produce este script sale de una
-  fotografía real que ya está publicada en calco.uy.
+  (Nicolás siempre tiene prioridad).
 
 CUÁNDO CORRE
 Diario, un rato antes que publisher.py (para que el respaldo ya esté
 listo si hace falta), vía GitHub Actions.
 
+CONFIGURACIÓN NUEVA REQUERIDA
+GEMINI_API_KEY en GitHub Secrets (o variable de entorno local). Se saca
+gratis en https://aistudio.google.com/apikey
+
 USO
     python render_creatives.py                     # hoy, mes actual
     python render_creatives.py --fecha 2026-09-02   # forzar una fecha
     python render_creatives.py --dry-run            # sin generar archivos
+    python render_creatives.py --sin-ia             # nunca usar IA (solo real/catálogo)
 """
 
 import argparse
 import json
 import re
 import sys
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
-from urllib.parse import urljoin
 
 try:
     import requests
@@ -76,11 +94,15 @@ except ImportError:
     drive_fotos = _SinDrive()
 
 # Pilares/formatos que este script NUNCA toca: necesitan una foto o
-# video real y nuevo, no una imagen de catálogo reciclada.
+# video real y nuevo, no una imagen de catálogo reciclada ni de IA.
 PILARES_EXCLUIDOS = {"produccion"}
 FORMATOS_EXCLUIDOS = {"reel"}
 
 TIMEOUT_HTTP = 20
+
+# Modelo de Gemini para generación de imágenes. Fijo acá, en un solo
+# lugar, porque Google renombra estos modelos seguido.
+MODELO_GEMINI_IMAGEN = "gemini-3.1-flash-image"
 
 
 def cargar_marca():
@@ -105,7 +127,7 @@ def ya_tiene_medio(anio_mes, pub_id):
 
     Mira primero en el repositorio y después en la carpeta de Drive. Si
     está en cualquiera de los dos, NO se genera imagen de respaldo: la
-    foto real de Nicolás siempre tiene prioridad sobre una de catálogo."""
+    foto real de Nicolás siempre tiene prioridad."""
     carpeta = DIR_CONTENIDO / anio_mes / "media"
     for ext in (".jpg", ".jpeg", ".png", ".mp4", ".mov"):
         if (carpeta / f"{pub_id}{ext}").exists():
@@ -151,10 +173,7 @@ def _normalizar(texto):
 
 def _misma_palabra(a, b):
     """Compara por prefijo en vez de intentar reglas de plural, que en
-    español fallan seguido (estuche/estuches, caja/cajas, rollo/rollos).
-    Dos palabras se consideran la misma si una empieza con la otra y
-    comparten al menos 4 caracteres: 'estuche' ≈ 'estuches',
-    'caja' ≈ 'cajas', pero 'caja' ≠ 'cuaderno'."""
+    español fallan seguido (estuche/estuches, caja/cajas, rollo/rollos)."""
     if a == b:
         return True
     corta, larga = (a, b) if len(a) <= len(b) else (b, a)
@@ -178,11 +197,6 @@ def _descargar_bytes(url):
 
 
 def _es_pagina_de_categoria(url):
-    """WooCommerce marca las categorías con /categoria-producto/ o
-    /product-category/ en la URL. Si la URL configurada en
-    sistema_de_marca.json es una de estas, NUNCA hay que usar su og:image
-    directamente: es el banner genérico del sitio, no una foto de
-    producto."""
     return "/categoria-producto/" in url or "/product-category/" in url
 
 
@@ -191,8 +205,7 @@ def _slug_de_categoria(url):
 
 
 def _listar_productos_store_api(url_categoria):
-    """Devuelve (lista_de_productos, error). Cada producto trae name e
-    images, que es lo que hace falta para matchear y para la foto."""
+    """Devuelve (lista_de_productos, error)."""
     dominio = "/".join(url_categoria.split("/")[:3])
     slug = _slug_de_categoria(url_categoria)
     endpoint = f"{dominio}/wp-json/wc/store/v1/products?category={slug}&per_page=50"
@@ -210,27 +223,19 @@ def _listar_productos_store_api(url_categoria):
     return productos, None
 
 
-def obtener_imagen_para_post(url_categoria, objeto_visual):
+def obtener_imagen_de_catalogo(url_categoria, objeto_visual):
     """REGLA CENTRAL: solo devuelve una foto si el nombre del producto en
     el catálogo coincide con el objeto del que habla el post.
-
-    Si el post dice "caja troquelada" y en el catálogo hay una "Caja
-    display", coincide (comparten "caja") y se usa esa foto. Si en el
-    catálogo solo hay bolsas, NO coincide y no se devuelve nada — es
-    preferible no publicar a publicar una bolsa cuando el texto habla de
-    cajas.
 
     Devuelve (bytes_imagen, nombre_producto, error)."""
     if not objeto_visual:
         return None, None, ("El post no declara qué objeto concreto muestra "
-                            "(campo 'objeto_visual' vacío). No se arriesga "
-                            "una foto que puede no corresponder.")
+                            "(campo 'objeto_visual' vacío).")
 
     productos, error = _listar_productos_store_api(url_categoria)
     if error:
         return None, None, error
 
-    # Ranking por coincidencia de nombre
     con_puntaje = []
     for p in productos:
         nombre = p.get("name") or ""
@@ -242,14 +247,10 @@ def obtener_imagen_para_post(url_categoria, objeto_visual):
             con_puntaje.append((puntaje, nombre, imagenes[0]["src"]))
 
     if not con_puntaje:
-        nombres = ", ".join(
-            (p.get("name") or "?") for p in productos[:8]
-        )
+        nombres = ", ".join((p.get("name") or "?") for p in productos[:8])
         return None, None, (
             f"Ningún producto del catálogo coincide con '{objeto_visual}'. "
-            f"Productos disponibles en la categoría: {nombres}. "
-            "No se genera imagen: publicar una foto que no corresponde al "
-            "texto es peor que no publicar."
+            f"Productos disponibles en la categoría: {nombres}."
         )
 
     con_puntaje.sort(key=lambda x: -x[0])
@@ -261,18 +262,75 @@ def obtener_imagen_para_post(url_categoria, objeto_visual):
         return None, None, f"No se pudo descargar la foto de '{nombre_elegido}': {e}"
 
 
-def armar_html_plantilla(imagen_data_url, nombre_empresa, sitio):
-    """La foto real, recortada a cuadrado 1080x1080, sin nada encima.
+# ---------------------------------------------------------------------
+# GENERACIÓN CON IA (Google Gemini / "Nano Banana")
+# ---------------------------------------------------------------------
 
-    NOTA DE DISEÑO: antes esta plantilla agregaba una franja inferior con
-    el nombre de la empresa y el sitio. Se quitó porque el nombre quedaba
-    triplicado: el logo ya viene impreso en los productos fotografiados,
-    el nombre de usuario de la cuenta ya dice calco.uy, y encima la
-    franja lo repetía una tercera vez. La foto limpia se ve mejor y no
-    compite con el producto.
+def _armar_prompt_ia(objeto_visual, marca):
+    """Arma el prompt para Gemini a partir del objeto_visual del post y
+    los principios de voz/marca. Estilo fijo: foto de producto profesional,
+    fondo neutro, sin texto ni logos inventados (el logo real se agrega,
+    si corresponde, en un paso aparte — no confiar en que la IA lo dibuje
+    bien)."""
+    empresa = marca.get("empresa", {}).get("nombre", "la empresa")
+    return (
+        f"Professional product photography of {objeto_visual}, "
+        f"for {empresa}, a graphic printing and packaging company. "
+        "Clean white or neutral studio background, soft natural shadows, "
+        "minimalist commercial product photography style, sharp focus, "
+        "realistic materials and textures, no visible text, no logos, "
+        "no brand names, square format for social media."
+    )
 
-    Los parámetros nombre_empresa y sitio se mantienen en la firma para
-    no romper la llamada existente, aunque ya no se usen."""
+
+def generar_imagen_ia(objeto_visual, marca):
+    """Genera una imagen con Gemini a partir del objeto_visual del post.
+
+    Devuelve (bytes_imagen, descripcion, error). No lanza excepciones:
+    cualquier fallo (falta la key, error de red, respuesta vacía) se
+    convierte en un error de texto para que el llamador decida no
+    publicar en vez de romper la corrida completa."""
+    if not objeto_visual:
+        return None, None, "No hay 'objeto_visual' declarado: no se genera nada con IA."
+
+    try:
+        from google import genai
+    except ImportError:
+        return None, None, ("Falta la librería google-genai. Instalar con: "
+                            "pip install google-genai")
+
+    import os
+    if not os.environ.get("GEMINI_API_KEY"):
+        return None, None, "Falta la variable de entorno GEMINI_API_KEY."
+
+    prompt = _armar_prompt_ia(objeto_visual, marca)
+
+    try:
+        client = genai.Client()  # lee GEMINI_API_KEY del entorno
+        response = client.models.generate_content(
+            model=MODELO_GEMINI_IMAGEN,
+            contents=[prompt],
+        )
+    except Exception as e:
+        return None, None, f"Error llamando a Gemini: {e}"
+
+    try:
+        for part in response.candidates[0].content.parts:
+            if getattr(part, "inline_data", None) is not None:
+                return part.inline_data.data, f"Generada por IA: {objeto_visual}", None
+    except Exception as e:
+        return None, None, f"Respuesta de Gemini sin imagen utilizable: {e}"
+
+    return None, None, "Gemini no devolvió ninguna imagen en la respuesta."
+
+
+# ---------------------------------------------------------------------
+# RENDERIZADO (recorte + plantilla)
+# ---------------------------------------------------------------------
+
+def armar_html_plantilla(imagen_data_url):
+    """La imagen (real, de catálogo, o generada por IA), recortada a
+    cuadrado 1080x1080, sin nada encima."""
     return f"""
 <!DOCTYPE html>
 <html>
@@ -297,12 +355,39 @@ def armar_html_plantilla(imagen_data_url, nombre_empresa, sitio):
 
 
 def renderizar(html, ruta_salida, navegador):
-    import base64
     pagina = navegador.new_page(viewport={"width": 1080, "height": 1080})
     pagina.set_content(html)
-    pagina.wait_for_timeout(200)  # margen para que la imagen de fondo termine de cargar
+    pagina.wait_for_timeout(200)
     pagina.screenshot(path=str(ruta_salida))
     pagina.close()
+
+
+# ---------------------------------------------------------------------
+# MANIFIESTO DE FUENTES (para poder auditar después qué tan seguido se
+# usó IA, y con qué resultado percibido)
+# ---------------------------------------------------------------------
+
+def _ruta_manifiesto(anio_mes):
+    return DIR_CONTENIDO / anio_mes / "media" / "fuentes_imagenes.json"
+
+
+def _registrar_fuente(anio_mes, pub_id, fuente, detalle):
+    ruta = _ruta_manifiesto(anio_mes)
+    datos = {}
+    if ruta.exists():
+        try:
+            with open(ruta, encoding="utf-8") as f:
+                datos = json.load(f)
+        except Exception:
+            datos = {}
+    datos[pub_id] = {
+        "fuente": fuente,  # "catalogo" | "ia"
+        "detalle": detalle,
+        "generado_el": datetime.now(timezone.utc).isoformat(),
+    }
+    ruta.parent.mkdir(parents=True, exist_ok=True)
+    with open(ruta, "w", encoding="utf-8") as f:
+        json.dump(datos, f, ensure_ascii=False, indent=2)
 
 
 def main():
@@ -310,6 +395,8 @@ def main():
     ap.add_argument("--fecha", help="Fecha a procesar, formato AAAA-MM-DD. Vacío = hoy.")
     ap.add_argument("--dry-run", action="store_true",
                     help="Muestra qué haría, sin generar archivos")
+    ap.add_argument("--sin-ia", action="store_true",
+                    help="Nunca generar con IA (solo foto real o catálogo)")
     args = ap.parse_args()
 
     fecha_objetivo = args.fecha or date.today().isoformat()
@@ -344,36 +431,52 @@ def main():
         navegador = playwright_ctx.chromium.launch()
 
     generadas = 0
+    generadas_por_ia = 0
 
     for pub in candidatas:
         pub_id = pub["id"]
         clave_producto = pub["producto"]
         info_producto = productos.get(clave_producto)
-
-        print(f"\n--- {pub_id} (producto: {clave_producto}) ---")
-
-        if not info_producto or not info_producto.get("url"):
-            print(f"  No hay URL configurada para el producto '{clave_producto}' "
-                  f"en marca/sistema_de_marca.json. Se salta.")
-            continue
-
-        url_producto = info_producto["url"]
         objeto_visual = pub.get("objeto_visual", "")
 
+        print(f"\n--- {pub_id} (producto: {clave_producto}) ---")
         print(f"  El post habla de: '{objeto_visual or '(no declarado)'}'")
-        print(f"  Buscando en el catálogo: {url_producto}")
 
-        imagen_bytes, nombre_elegido, error = obtener_imagen_para_post(
-            url_producto, objeto_visual
-        )
-        if error:
-            print(f"  NO SE GENERA — {error}")
+        imagen_bytes = None
+        nombre_elegido = None
+        fuente = None
+
+        # 1. Catálogo web (si hay URL configurada para el producto)
+        if info_producto and info_producto.get("url"):
+            url_producto = info_producto["url"]
+            print(f"  Buscando en el catálogo: {url_producto}")
+            imagen_bytes, nombre_elegido, error = obtener_imagen_de_catalogo(
+                url_producto, objeto_visual
+            )
+            if imagen_bytes:
+                fuente = "catalogo"
+                print(f"  Coincidencia encontrada en catálogo: «{nombre_elegido}»")
+            else:
+                print(f"  Catálogo no sirvió — {error}")
+        else:
+            print(f"  No hay URL configurada para el producto '{clave_producto}'.")
+
+        # 2. IA, solo si el catálogo no dio nada y no se pidió --sin-ia
+        if not imagen_bytes and not args.sin_ia:
+            print("  Intentando generar con IA (Gemini)...")
+            imagen_bytes, nombre_elegido, error = generar_imagen_ia(objeto_visual, marca)
+            if imagen_bytes:
+                fuente = "ia"
+                print(f"  Imagen generada por IA para: «{objeto_visual}»")
+            else:
+                print(f"  IA no generó nada — {error}")
+
+        if not imagen_bytes:
+            print("  NO SE GENERA — no hay foto de catálogo ni imagen de IA disponible.")
             continue
 
-        print(f"  Coincidencia encontrada: «{nombre_elegido}»")
-
         if args.dry_run:
-            print("  [dry-run] Se generaría la imagen con esa foto.")
+            print(f"  [dry-run] Se generaría la imagen (fuente: {fuente}).")
             continue
 
         import base64
@@ -382,27 +485,28 @@ def main():
             mime = "image/png"
         data_url = f"data:{mime};base64,{base64.b64encode(imagen_bytes).decode()}"
 
-        html = armar_html_plantilla(
-            data_url,
-            marca["empresa"]["nombre"],
-            marca["empresa"]["sitio"].replace("https://", "").replace("http://", ""),
-        )
-
+        html = armar_html_plantilla(data_url)
         ruta_salida = carpeta_media / f"{pub_id}.jpg"
         renderizar(html, ruta_salida, navegador)
         generadas += 1
-        print(f"  Generada: {ruta_salida}")
-        print(f"    Foto real de «{nombre_elegido}» del catálogo de calco.uy")
+        if fuente == "ia":
+            generadas_por_ia += 1
+
+        _registrar_fuente(anio_mes, pub_id, fuente, nombre_elegido)
+
+        print(f"  Generada: {ruta_salida} (fuente: {fuente})")
 
     if navegador:
         navegador.close()
 
-    print(f"\nListo. {generadas} imagen(es) de respaldo generada(s).")
+    print(f"\nListo. {generadas} imagen(es) de respaldo generada(s), "
+          f"{generadas_por_ia} de ellas con IA.")
     if generadas:
         print("Recordatorio: si Nicolás sube su propia foto para el mismo id "
               "antes de que publisher.py corra, esa tiene prioridad — este "
               "script no la sobrescribe en corridas futuras porque ya "
               "detecta que el archivo existe.")
+        print(f"Detalle de fuentes usadas: {_ruta_manifiesto(anio_mes)}")
 
 
 if __name__ == "__main__":
