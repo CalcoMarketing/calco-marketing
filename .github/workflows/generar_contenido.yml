@@ -17,6 +17,11 @@ on:
         options:
           - anthropic
           - deepseek
+      sin_aviso:
+        description: 'No enviar el mail de aviso a Nicolás'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -42,12 +47,18 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           PROVEEDOR_IA: ${{ inputs.proveedor || 'anthropic' }}
+          EMAIL_REMITENTE: ${{ secrets.EMAIL_REMITENTE }}
+          EMAIL_CLAVE_APP: ${{ secrets.EMAIL_CLAVE_APP }}
+          NICOLAS_EMAIL: ${{ secrets.NICOLAS_EMAIL }}
         run: |
+          ARGS=""
           if [ -n "${{ inputs.mes }}" ]; then
-            python content_engine.py --mes "${{ inputs.mes }}"
-          else
-            python content_engine.py
+            ARGS="$ARGS --mes ${{ inputs.mes }}"
           fi
+          if [ "${{ inputs.sin_aviso }}" = "true" ]; then
+            ARGS="$ARGS --sin-aviso"
+          fi
+          python content_engine.py $ARGS
 
       - name: Guardar el resultado en el repositorio
         run: |
