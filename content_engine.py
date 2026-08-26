@@ -652,6 +652,46 @@ def marcar_duplicados(pubs, ganchos_mes_anterior=None):
     return pubs
 
 
+# Si el gancho supera esta longitud, es sospechoso: el gancho es "la
+# primera línea, hasta 60 caracteres" según la instrucción del prompt.
+# Se deja margen (100) para no marcar ganchos un poco largos que están
+# bien, y detectar el caso real que se vio en la práctica: el modelo
+# vuelca el post ENTERO en el campo "gancho" y deja "copy" vacío.
+LARGO_MAXIMO_GANCHO_NORMAL = 100
+
+
+def marcar_copy_vacio(pubs):
+    """
+    Verificación por código de un desvío nuevo detectado en la Sesión 5:
+    el modelo a veces devuelve el texto completo del post dentro del
+    campo 'gancho' y deja 'copy' vacío. El JSON es válido — no lo
+    detecta el parseo — pero el post sale con el cuerpo en blanco en
+    calendario.md, en la lista de fotos y en el mail a Nicolás.
+
+    Se detecta así: copy vacío (o casi) + gancho anormalmente largo.
+    Se marca con 'copy_vacio': True para que quede visible en el
+    markdown y quien revise el calendario antes de publicar lo vea y
+    lo corrija a mano. No se intenta corregir solo (separar
+    automáticamente gancho/copy es arriesgado: podría cortar mal una
+    oración), es más seguro que una persona lo revise una vez detectado.
+    """
+    marcadas = 0
+    for p in pubs:
+        copy_texto = (p.get("copy") or "").strip()
+        gancho = p.get("gancho") or ""
+        if not copy_texto and len(gancho) > LARGO_MAXIMO_GANCHO_NORMAL:
+            p["copy_vacio"] = True
+            marcadas += 1
+
+    if marcadas:
+        print(f"  ATENCIÓN: {marcadas} publicación(es) con 'copy' vacío y "
+              f"'gancho' sospechosamente largo — probablemente el modelo "
+              f"volcó todo el texto en el campo equivocado. Revisar y "
+              f"corregir a mano antes de publicar (buscar 'copy_vacio' en "
+              f"calendario.md).")
+    return pubs
+
+
 def _quitar_cta_duplicado(copy_texto, cta):
     """El CTA lo agrega el sistema aparte, pero el modelo a veces lo
     escribe igual al final del cuerpo. Resultado: el mismo pedido dos
@@ -730,6 +770,7 @@ def fusionar(esqueleto, generado, marca):
 
 def escribir_markdown(pubs, anio, mes, ruta):
     duplicados = [p for p in pubs if p.get("duplicado_de")]
+    vacios = [p for p in pubs if p.get("copy_vacio")]
     lineas = [
         f"# Calendario Editorial · {NOMBRE_MES[mes]} {anio}",
         f"## Calco Industria Gráfica",
@@ -748,6 +789,15 @@ def escribir_markdown(pubs, anio, mes, ruta):
             "",
         ]
 
+    if vacios:
+        lineas += [
+            "> 🚨 **REVISAR ANTES DE PUBLICAR:** hay publicaciones con el "
+            "texto vacío — el modelo volcó todo el contenido en el gancho "
+            "por error. Están marcadas más abajo con 🚨. Hay que separar "
+            "el texto a mano antes de usarlas.",
+            "",
+        ]
+
     lineas += ["---", ""]
 
     ig = [p for p in pubs if p["red"] == "instagram_facebook"]
@@ -761,6 +811,7 @@ def escribir_markdown(pubs, anio, mes, ruta):
             if p.get("vertical"):
                 etiqueta += f" · {p['vertical']}"
             alerta = " ⚠️ POSIBLE DUPLICADO" if p.get("duplicado_de") else ""
+            alerta += " 🚨 TEXTO VACÍO — REVISAR" if p.get("copy_vacio") else ""
             lineas += [
                 f"### 📅 {p['dia_semana'].capitalize()} {f.day} de {NOMBRE_MES[mes]} · {etiqueta}{alerta}",
                 f"**Formato:** {p['formato']} · **Hora:** {p['hora']}",
@@ -770,6 +821,13 @@ def escribir_markdown(pubs, anio, mes, ruta):
             if p.get("duplicado_de"):
                 lineas += [
                     f"⚠️ *Se parece a la publicación `{p['duplicado_de']}` de este mismo mes. Revisar antes de programar.*",
+                    "",
+                ]
+            if p.get("copy_vacio"):
+                lineas += [
+                    "🚨 *El texto de este post quedó vacío (probablemente volcado "
+                    "por error dentro del gancho, más abajo). Separar el gancho "
+                    "real del cuerpo a mano antes de usar este post.*",
                     "",
                 ]
             for parrafo in p["copy"].split("\n\n"):
@@ -857,10 +915,22 @@ def avisar_a_nicolas(anio, mes, pubs_ig):
 
     asunto = f"Contenido de {NOMBRE_MES[mes]} — Calco ({len(pubs_ig)} publicaciones)"
 
+    hay_problemas = any(p.get("duplicado_de") or p.get("copy_vacio") for p in pubs_ig)
+
     partes = [
         f"Hola Nicolás,\n",
         f"Ya está listo el calendario de {NOMBRE_MES[mes]} {anio} para "
         f"Instagram y Facebook: {len(pubs_ig)} publicaciones.\n",
+    ]
+
+    if hay_problemas:
+        partes.append(
+            "⚠ OJO: algunas publicaciones de abajo quedaron marcadas para "
+            "revisar antes de publicar (texto duplicado o vacío). Están "
+            "señaladas con ⚠ o 🚨 en su fecha correspondiente.\n"
+        )
+
+    partes += [
         "Abajo está el texto completo de cada una, con la foto o video que "
         "hay que conseguir para cada post. Si preferís verlo en GitHub:\n",
         f"  Calendario completo: {link_calendario}",
@@ -875,11 +945,26 @@ def avisar_a_nicolas(anio, mes, pubs_ig):
         if p.get("vertical"):
             etiqueta += f" · {p['vertical']}"
 
+        alerta = ""
+        if p.get("duplicado_de"):
+            alerta += " [⚠ POSIBLE DUPLICADO]"
+        if p.get("copy_vacio"):
+            alerta += " [🚨 TEXTO VACÍO — REVISAR ANTES DE USAR]"
+
         partes.append("")
-        partes.append(f"{f.day}/{mes:02d} ({p.get('dia_semana', '')}) · {etiqueta}")
+        partes.append(f"{f.day}/{mes:02d} ({p.get('dia_semana', '')}) · {etiqueta}{alerta}")
         partes.append(f"[{tipo} A CONSEGUIR] {p.get('imagen', '')}")
         partes.append("")
-        partes.append(p.get("copy", "").strip())
+        if p.get("copy_vacio"):
+            partes.append(
+                "[Este post quedó con el texto vacío — probablemente el "
+                "sistema volcó todo por error en el título. Se necesita "
+                "revisión manual antes de usar este post. El texto crudo, "
+                "sin separar, quedó en el campo 'gancho':]"
+            )
+            partes.append(p.get("gancho", ""))
+        else:
+            partes.append(p.get("copy", "").strip())
         if p.get("duplicado_de"):
             partes.append("")
             partes.append(
@@ -983,6 +1068,7 @@ def main():
         sys.exit(1)
 
     pubs = marcar_duplicados(pubs, ganchos_mes_anterior=ganchos_prev)
+    pubs = marcar_copy_vacio(pubs)
 
     destino = DIR_CONTENIDO / f"{anio}-{mes:02d}"
     destino.mkdir(parents=True, exist_ok=True)
