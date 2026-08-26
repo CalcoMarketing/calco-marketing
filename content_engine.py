@@ -10,7 +10,8 @@ Instagram + Facebook y para LinkedIn, con copy listo para publicar,
 hashtags, indicación de imagen y llamado a la acción rotado.
 
 Además produce la lista de fotos y videos que hay que conseguir en el
-taller, que es la única entrada humana que el sistema necesita.
+taller, que es la única entrada humana que el sistema necesita — y le
+avisa a Nicolás por mail apenas está lista, con el link directo.
 
 CÓMO ESTÁ DISEÑADO
 La estructura la calcula el código, no el modelo: las fechas, el reparto
@@ -39,6 +40,17 @@ El motor funciona igual con Anthropic o con DeepSeek. Se cambia con la
 variable PROVEEDOR_IA, sin tocar el código. El resto del programa no sabe
 qué modelo hay detrás.
 
+AVISO A NICOLÁS POR MAIL (nuevo, Sesión 5)
+Al terminar de generar el calendario, se envía un mail simple a Nicolás
+con el link directo a lista-de-fotos.md del mes. Requiere estas variables
+de entorno (secrets de GitHub):
+    EMAIL_REMITENTE     la cuenta de Gmail que manda el aviso (ej: marketing@calco.uy)
+    EMAIL_CLAVE_APP     contraseña de aplicación de esa cuenta (no la contraseña normal)
+    NICOLAS_EMAIL       opcional, por defecto nastengo@smartier.software
+
+Si faltan estas variables, el calendario se genera igual — el aviso por
+mail es un extra, nunca bloquea la función principal del script.
+
 SALIDA
     contenido/AAAA-MM/calendario.md      <- para copiar y pegar
     contenido/AAAA-MM/calendario.json    <- para el publicador automático
@@ -51,8 +63,10 @@ import json
 import locale
 import os
 import re
+import smtplib
 import sys
 from datetime import date, timedelta
+from email.mime.text import MIMEText
 from pathlib import Path
 
 try:
@@ -145,6 +159,11 @@ MAX_TOKENS = 16000
 RAIZ = Path(__file__).parent
 ARCHIVO_MARCA = RAIZ / "marca" / "sistema_de_marca.json"
 DIR_CONTENIDO = RAIZ / "contenido"
+
+# Repo público: se usa para armar el link directo que se le manda a
+# Nicolás por mail. Si el repo cambiara de nombre/organización, actualizar
+# solo acá.
+REPO_GITHUB_URL = "https://github.com/CalcoMarketing/calco-marketing/blob/main"
 
 DIAS_SEMANA = {
     "lunes": 0, "martes": 1, "miercoles": 2,
@@ -804,6 +823,99 @@ def escribir_lista_fotos(pubs, anio, mes, ruta):
 
 
 # ---------------------------------------------------------------------------
+# AVISO A NICOLÁS POR MAIL (nuevo, Sesión 5)
+# ---------------------------------------------------------------------------
+
+def avisar_a_nicolas(anio, mes, pubs_ig):
+    """
+    Manda un mail con el contenido COMPLETO del mes para Instagram/Facebook:
+    para cada publicación, la fecha, qué foto o video hay que conseguir, y
+    el texto entero del post — no solo la lista de fotos. Así Nicolás ve
+    el contexto real de cada publicación, no una lista suelta de objetos
+    para fotografiar sin saber para qué van.
+
+    También incluye los links a calendario.md y lista-de-fotos.md por si
+    prefiere verlo directamente en GitHub.
+
+    Es un extra, no una función crítica: si faltan las variables de
+    entorno o falla el envío, se avisa por consola pero NO se corta la
+    generación del calendario. Perder el mail es mucho menos grave que
+    perder el calendario entero por un problema de SMTP.
+    """
+    remitente = os.environ.get("EMAIL_REMITENTE")
+    clave_app = os.environ.get("EMAIL_CLAVE_APP")
+    destinatario = os.environ.get("NICOLAS_EMAIL", "nastengo@smartier.software")
+
+    if not remitente or not clave_app:
+        print("  (Aviso a Nicolás NO enviado: faltan los secrets "
+              "EMAIL_REMITENTE y/o EMAIL_CLAVE_APP en GitHub.)")
+        return
+
+    anio_mes = f"{anio}-{mes:02d}"
+    link_calendario = f"{REPO_GITHUB_URL}/contenido/{anio_mes}/calendario.md"
+    link_fotos = f"{REPO_GITHUB_URL}/contenido/{anio_mes}/lista-de-fotos.md"
+
+    asunto = f"Contenido de {NOMBRE_MES[mes]} — Calco ({len(pubs_ig)} publicaciones)"
+
+    partes = [
+        f"Hola Nicolás,\n",
+        f"Ya está listo el calendario de {NOMBRE_MES[mes]} {anio} para "
+        f"Instagram y Facebook: {len(pubs_ig)} publicaciones.\n",
+        "Abajo está el texto completo de cada una, con la foto o video que "
+        "hay que conseguir para cada post. Si preferís verlo en GitHub:\n",
+        f"  Calendario completo: {link_calendario}",
+        f"  Solo la lista de fotos: {link_fotos}\n",
+        "=" * 60,
+    ]
+
+    for p in sorted(pubs_ig, key=lambda x: x["fecha"]):
+        f = date.fromisoformat(p["fecha"])
+        tipo = "VIDEO" if p.get("formato") == "reel" else "FOTO"
+        etiqueta = p.get("pilar", "")
+        if p.get("vertical"):
+            etiqueta += f" · {p['vertical']}"
+
+        partes.append("")
+        partes.append(f"{f.day}/{mes:02d} ({p.get('dia_semana', '')}) · {etiqueta}")
+        partes.append(f"[{tipo} A CONSEGUIR] {p.get('imagen', '')}")
+        partes.append("")
+        partes.append(p.get("copy", "").strip())
+        if p.get("duplicado_de"):
+            partes.append("")
+            partes.append(
+                f"⚠ ATENCIÓN: este post se parece a {p['duplicado_de']} — "
+                "revisar antes de programar, puede necesitar ajustes."
+            )
+        partes.append("")
+        partes.append("-" * 60)
+
+    partes.append("")
+    partes.append(
+        "Recordatorio: subí cada foto/video a la carpeta de Drive 'FOTOS "
+        "PARA PUBLICAR' con el nombre del post (por ejemplo: "
+        f"ig-{anio_mes}-02.jpg). El sistema las toma solas de ahí.\n"
+    )
+    partes.append("— Sistema de contenido de Calco (mensaje automático, no responder)")
+
+    cuerpo = "\n".join(partes)
+
+    msg = MIMEText(cuerpo, _charset="utf-8")
+    msg["Subject"] = asunto
+    msg["From"] = remitente
+    msg["To"] = destinatario
+
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(remitente, clave_app)
+            server.sendmail(remitente, [destinatario], msg.as_string())
+        print(f"  Aviso completo enviado a Nicolás ({destinatario}).")
+    except Exception as e:
+        print(f"  No se pudo enviar el aviso a Nicolás: {e}")
+        print("  (No es grave: el calendario y la lista de fotos ya están "
+              "guardados igual. Avisarle manualmente esta vez.)")
+
+
+# ---------------------------------------------------------------------------
 # MAIN
 # ---------------------------------------------------------------------------
 
@@ -819,6 +931,8 @@ def main():
     ap.add_argument("--mes", help="Mes a generar, formato AAAA-MM")
     ap.add_argument("--dry-run", action="store_true",
                     help="Muestra la grilla sin llamar a la API")
+    ap.add_argument("--sin-aviso", action="store_true",
+                    help="No enviar el mail de aviso a Nicolás")
     args = ap.parse_args()
 
     if args.mes:
@@ -885,6 +999,10 @@ def main():
     print("  calendario.md      para copiar y pegar")
     print("  calendario.json    para el publicador automático")
     print("  lista-de-fotos.md  para Nicolás")
+
+    if not args.sin_aviso:
+        pubs_ig = [p for p in pubs if p["red"] == "instagram_facebook"]
+        avisar_a_nicolas(anio, mes, pubs_ig)
 
 
 if __name__ == "__main__":
