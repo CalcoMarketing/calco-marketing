@@ -225,7 +225,14 @@ def _listar_productos_store_api(url_categoria):
 
 def obtener_imagen_de_catalogo(url_categoria, objeto_visual):
     """REGLA CENTRAL: solo devuelve una foto si el nombre del producto en
-    el catálogo coincide con el objeto del que habla el post.
+    el catálogo coincide con TODAS las palabras significativas del objeto
+    del que habla el post — no alcanza con compartir una palabra genérica.
+
+    Por qué importa: 'caja troquelada' comparte la palabra 'caja' con
+    'Caja para papas fritas', pero son productos completamente distintos.
+    Exigir coincidencia total evita ese falso positivo — si no hay match
+    completo, se prefiere no usar catálogo y dejar que el llamador intente
+    con IA en vez de forzar una foto que no corresponde.
 
     Devuelve (bytes_imagen, nombre_producto, error)."""
     if not objeto_visual:
@@ -236,6 +243,12 @@ def obtener_imagen_de_catalogo(url_categoria, objeto_visual):
     if error:
         return None, None, error
 
+    palabras_objeto = _normalizar(objeto_visual)
+    if not palabras_objeto:
+        return None, None, (
+            f"'{objeto_visual}' no tiene palabras significativas para comparar."
+        )
+
     con_puntaje = []
     for p in productos:
         nombre = p.get("name") or ""
@@ -243,14 +256,19 @@ def obtener_imagen_de_catalogo(url_categoria, objeto_visual):
         if not nombre or not imagenes or not imagenes[0].get("src"):
             continue
         puntaje = _puntaje_coincidencia(objeto_visual, nombre)
-        if puntaje > 0:
+        # Coincidencia completa: TODAS las palabras del objeto_visual
+        # tienen que aparecer en el nombre del producto. Una coincidencia
+        # parcial (solo "caja" de "caja troquelada") no alcanza.
+        if puntaje == len(palabras_objeto):
             con_puntaje.append((puntaje, nombre, imagenes[0]["src"]))
 
     if not con_puntaje:
         nombres = ", ".join((p.get("name") or "?") for p in productos[:8])
         return None, None, (
-            f"Ningún producto del catálogo coincide con '{objeto_visual}'. "
-            f"Productos disponibles en la categoría: {nombres}."
+            f"Ningún producto del catálogo coincide completamente con "
+            f"'{objeto_visual}' (se exige que coincidan todas sus palabras "
+            f"significativas, no solo una). Productos disponibles en la "
+            f"categoría: {nombres}."
         )
 
     con_puntaje.sort(key=lambda x: -x[0])
