@@ -92,7 +92,13 @@
 **Formato:** imagen · **Hora:** 09:30
 **Imagen a conseguir:** Foto de un credencial de congreso con cordón, apoyada sobre una mesa junto a folletos y un roll-up, con luz de taller
 
-> 
+> En congresos y eventos no hay segunda vuelta: la credencial tiene que estar para el día del registro y el roll-up para la apertura.
+>
+> Por eso tenemos una línea de impresos urgentes, separada del trabajo regular, para plazos ajustados con fecha fija.
+>
+> Folletería, roll-ups, exhibidores, credenciales. Lo producimos y te lo llevamos a domicilio.
+>
+> Si el evento tiene fecha, el papel se imprime antes.
 
 `#ImprentaUruguay #IndustriaGrafica #HechoEnUruguay #Montevideo #ImpresosUrgentes #ImpresionRapida #Canelones #CiudadDeLaCosta #PackagingUruguay`
 
